@@ -1,0 +1,3 @@
+Symbol	Enrty	Stop
+EL	82.08	63.27
+SXT	104.45	80.82
