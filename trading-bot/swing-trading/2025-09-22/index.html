@@ -421,7 +421,11 @@
       <td>199</td>
       <td>19.45</td>
       <td>20.5</td>
-      <td>$208</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.04">
+              $208
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -432,7 +436,11 @@
       <td>1033</td>
       <td>3.87</td>
       <td>3.76</td>
-      <td>-$113</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $5.19, SLD $5.36">
+              -$113
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -443,7 +451,11 @@
       <td>39</td>
       <td>101.04</td>
       <td>93.99</td>
-      <td>-$274</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.0">
+              -$274
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -454,7 +466,11 @@
       <td>186</td>
       <td>21.57</td>
       <td>22.10</td>
-      <td>$98</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.03">
+              $98
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -465,7 +481,11 @@
       <td>1261</td>
       <td>3.17</td>
       <td>3.19</td>
-      <td>$25</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $6.33, SLD $6.54">
+              $25
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -476,7 +496,11 @@
       <td>95</td>
       <td>41.67</td>
       <td>38.9</td>
-      <td>-$263</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.02">
+              -$263
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -487,7 +511,11 @@
       <td>24</td>
       <td>160.91</td>
       <td>158.53</td>
-      <td>-$57</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.0">
+              -$57
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -498,7 +526,11 @@
       <td>1049</td>
       <td>3.81</td>
       <td>3.99</td>
-      <td>$188</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $5.27, SLD $5.44">
+              $188
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -509,7 +541,11 @@
       <td>76</td>
       <td>52.58</td>
       <td>53.84</td>
-      <td>$95</td>
+      <td>
+          <a href="#" data-bs-toggle="tooltip" data-bs-title="Fee's: BOT $1.0, SLD $1.01">
+              $95
+          </a>
+      </td>
     </tr>
     
     <tr>
@@ -524,5 +560,14 @@
     </div>
     
   </div>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+       })
+      });
+
+  </script>
   </body>
 </html>
