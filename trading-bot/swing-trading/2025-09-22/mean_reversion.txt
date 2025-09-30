@@ -1,0 +1,4 @@
+Symbol	Enrty	Stop
+HAS	73.23	62.17
+SXT	101.04	78.22
+WEX	160.91	130.56
