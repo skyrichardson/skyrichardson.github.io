@@ -1,0 +1,1 @@
+Broker rejected BREA with reason: The contract is not available for short sale.

@@ -1,0 +1,10 @@
+**Trades that hit stops:**
+None
+
+**Trades closed at market close**
+None
+YPF SELL 84.0 shares at market
+FDS SELL 6.0 shares at market
+QS BUY 155.0 shares at market
+SKE BUY 112.0 shares at market
+KYTX BUY 381.0 shares at market

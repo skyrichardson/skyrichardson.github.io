@@ -1,0 +1,1 @@
+Broker rejected short limit order for RGTI. As a result the bot outperfomed the system by ~$100.
