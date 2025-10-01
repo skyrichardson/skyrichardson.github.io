@@ -1,0 +1,1 @@
+Broker rejected sell limit order for EFTY.

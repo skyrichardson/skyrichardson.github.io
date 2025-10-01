@@ -1,0 +1,3 @@
+Broker rejected sell limit orders for VUZI (Insuffiencent shares to short), TEM, OR, SKBL, and AGH.
+
+Not being able to short SKBL means the bot underperformed ~$400...

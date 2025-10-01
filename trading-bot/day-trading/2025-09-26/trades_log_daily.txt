@@ -1,0 +1,11 @@
+**Trades that hit stops:**
+EYPT BUY 147.0 shares at 14.06
+EWTX BUY 128.0 shares at 16.34
+
+**Trades closed at market close**
+None
+UUUU BUY 108.0 shares at market
+IE BUY 168.0 shares at market
+GRAL BUY 39.0 shares at market
+INTC BUY 56.0 shares at market
+CTMX BUY 671.0 shares at market

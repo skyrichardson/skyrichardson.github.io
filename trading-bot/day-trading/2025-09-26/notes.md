@@ -1,0 +1,3 @@
+Broker rejected sell limt orders for ZYBT (up-tick rule), NUTR, PTNM and SDM.
+
+My ZYBT limit order was rejected because the supplied stop or AuPrice was -3.7709 which was likely a typo. This saved me $21...

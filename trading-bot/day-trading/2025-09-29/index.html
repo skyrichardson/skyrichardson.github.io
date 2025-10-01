@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>2025-09-29 Swing Trading Performance | Trading Bot</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body class="">
+  <nav class="navbar navbar-expand bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/trading-bot/">Trading Bot</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/trading-bot/swing-trading/">Swing Trading</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/trading-bot/day-trading/">Day Trading</a>
+        </li>
+    </div>
+  </div>
+</nav>
+  <div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+      <ol class="breadcrumb mt-2">
+        <li class="breadcrumb-item"><a href="/trading-bot/day-trading/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">2025-09-29</li>
+      </ol>
+    </nav>
+    <div class="" style="max-width:700px">
+        <div id="charts-carousel" class="carousel slide">
+          <div class="carousel-inner">
+            <div id="dbi" class="carousel-item active">
+              <img src="dxyz_chart.png" aria-label="Placeholder: First slide" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 1 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 1 of 6</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="ritr_chart.png" aria-label="Placeholder: slide short" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 2 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 2 of 6</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="skyt_chart.png" aria-label="Placeholder: slide short" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 3 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 3 of 6</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="crnx_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 4 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 4 of 6</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="dki_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 5 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 5 of 6</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="efty_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 6 of 6</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 6 of 6</text></img>
+            </div>
+            
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#charts-carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#charts-carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+        </div>
+    </div>
+    <!-- table -->
+    <div class="table-responsive" style="max-width:700px">
+      <table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Symbol</th>
+      <th scope="col">Strategy</th>
+      <th scope="col">Shares</th>
+      <th scope="col">Entry</th>
+      <th scope="col">Stop</th>
+      <th scope="col">Exit</th>
+      <th scope="col">Gain/Loss*</th>
+    </tr>
+  </thead>
+  <tbody>
+<!--    <tr>-->
+<!--      <th scope="row">-->
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DBI</a>-->
+<!--      </th>-->
+<!--      <td>pullback</td>-->
+<!--      <td>100</td>-->
+<!--      <td>4.21</td>-->
+<!--      <td>3.65</td>-->
+<!--      <td>4.48</td>-->
+<!--      <td>$270</td>-->
+<!--    </tr>-->
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DXYZ</a>
+      </th>
+      <td>ATRBreakoutLong</td>
+      <td>85</td>
+      <td>23.26</td>
+      <td>19.45</td>
+      <td>23.0</td>
+      <td  class="text-danger">-$22</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="1">RITR</a>
+      </th>
+      <td>ATRBreakoutShort</td>
+      <td>267</td>
+      <td>7.48</td>
+      <td>9.15</td>
+      <td>7.23</td>
+      <td >$66</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="2">SKYT</a>
+      </th>
+      <td>ATRBreakoutShort</td>
+      <td>105</td>
+      <td>19.03</td>
+      <td>23.54</td>
+      <td>18.22</td>
+      <td >$85</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="3">CRNX</a>
+      </th>
+      <td>SecondDayPlayLong</td>
+      <td>46</td>
+      <td>43.47</td>
+      <td>39.99</td>
+      <td>43.51</td>
+      <td >$1</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="4">DKI</a>
+      </th>
+      <td>SecondDayPlayLong</td>
+      <td>193</td>
+      <td>10.32</td>
+      <td>8.83</td>
+      <td>10.5</td>
+      <td >$34</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="5">EFTY</a>
+      </th>
+      <td>SecondDayPlayLong</td>
+      <td>142</td>
+      <td>13.99</td>
+      <td>12.99</td>
+      <td>14.89</td>
+      <td >$127</td>
+    </tr>
+    
+    <tr>
+      <td colspan="6" class="text-end">Total:</td>
+      <td ><strong>$291</strong></td>
+    </tr>
+    <tr>
+      <td colspan="5">Available equity: $40,000 (up to 20 trades)</td>
+      <td class="text-end">Change in equity:</td>
+      <td ><strong>0.73%</strong></td>
+    </tr>
+      <tr>
+      <td colspan="6" class="text-end">SPY benchmark:</td>
+      <td   class="text-danger">-0.1%</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="text-muted small text-end">
+        * Not including trade fee's and slippage.
+      </div>
+    </div>
+    
+
+    
+    <div class="table-responsive mt-5" style="max-width:700px">
+        <h4>My Trades</h4>
+      <table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Symbol</th>
+      <th scope="col">Shares</th>
+      <th scope="col">Entry</th>
+      <th scope="col">Exit</th>
+      <th scope="col">Gain/Loss*</th>
+    </tr>
+  </thead>
+  <tbody>
+<!--    <tr>-->
+<!--      <th scope="row">-->
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DBI</a>-->
+<!--      </th>-->
+<!--      <td>pullback</td>-->
+<!--      <td>100</td>-->
+<!--      <td>4.21</td>-->
+<!--      <td>3.65</td>-->
+<!--      <td>4.48</td>-->
+<!--      <td>$270</td>-->
+<!--    </tr>-->
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">CRNX</a>-->
+          CRNX
+      </th>
+      <td>46</td>
+      <td>43.47</td>
+      <td>43.37</td>
+      <td  class="text-danger">
+          -$4
+      </td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="1">DXYZ</a>-->
+          DXYZ
+      </th>
+      <td>85</td>
+      <td>23.26</td>
+      <td>22.93</td>
+      <td  class="text-danger">
+          -$28
+      </td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="2">SKYT</a>-->
+          SKYT
+      </th>
+      <td>105</td>
+      <td>19.03</td>
+      <td>18.22</td>
+      <td >
+          $85
+      </td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="3">DKI</a>-->
+          DKI
+      </th>
+      <td>193</td>
+      <td>10.32</td>
+      <td>10.31</td>
+      <td  class="text-danger">
+          -$1
+      </td>
+    </tr>
+    
+    <tr>
+      <td colspan="4" class="text-end">Total:</td>
+      <td ><strong>$52</strong></td>
+    </tr>
+  </tbody>
+</table>
+              <div class="text-muted small text-end">
+        * Not including trade fee's.
+      </div>
+    </div>
+    
+    
+    <div class="mt-3 mb-5">
+        <h5>Notes</h5>
+        <p>Broker rejected sell limit order for RITR, MSGY and EFTY (close-order only status)</p>
+    </div>
+    
+
+<!--      <div style="max-width:700px">-->
+<!--          <img src="screenshot.png" class="img-fluid">-->
+<!--      </div>-->
+  </div>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+       })
+      });
+
+  </script>
+  </body>
+</html>

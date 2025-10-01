@@ -1,0 +1,12 @@
+**Trades that hit stops:**
+ADVM BUY 505.0 shares at 4.67
+
+**Trades closed at market close**
+None
+M BUY 116.0 shares at market
+AXTI SELL 407.0 shares at market
+RR SELL 402.0 shares at market
+PLUG BUY 711.0 shares at market
+NIO BUY 281.0 shares at market
+AQST BUY 366.0 shares at market
+VUZI BUY 554.0 shares at market

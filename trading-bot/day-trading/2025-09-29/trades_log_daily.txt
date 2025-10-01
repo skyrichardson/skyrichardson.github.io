@@ -1,0 +1,9 @@
+**Trades that hit stops:**
+BTQ BUY 340.0 shares at 6.8
+
+**Trades closed at market close**
+None
+DKI SELL 193.0 shares at market
+CRNX SELL 46.0 shares at market
+SKYT BUY 105.0 shares at market
+DXYZ SELL 85.0 shares at market
