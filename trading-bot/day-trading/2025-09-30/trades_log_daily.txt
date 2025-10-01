@@ -1,0 +1,16 @@
+**Trades that hit stops:**
+None
+
+**Trades closed at market close**
+None
+ACB SELL 335.0 shares at market
+WOLF BUY 82.0 shares at market
+MNMD SELL 173.0 shares at market
+SRRK SELL 54.0 shares at market
+COGT SELL 145.0 shares at market
+ARVN BUY 231.0 shares at market
+PGY SELL 66.0 shares at market
+DXYZ SELL 90.0 shares at market
+JFB SELL 175.0 shares at market
+CART SELL 54.0 shares at market
+BKKT BUY 69.0 shares at market
