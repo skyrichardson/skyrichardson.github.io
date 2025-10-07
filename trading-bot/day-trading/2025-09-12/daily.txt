@@ -1,0 +1,27 @@
+Strat	                Date	        Ticker	Entry	Stop Distance
+ATRBreakoutLong	        2025-09-12	PAY	31.78	4.46
+ATRBreakoutLong	        2025-09-12	PESI	7.4	3.73
+ATRBreakoutLong	        2025-09-12	TARS	49.41	6.9
+ATRBreakoutShort	2025-09-12	AEI	4.07	1.68
+ATRBreakoutShort	2025-09-12	ALLT	9.84	1.56
+ATRBreakoutShort	2025-09-12	CENX	25.15	3.62
+ATRBreakoutShort	2025-09-12	FCEL	6.78	1.81
+ATRBreakoutShort	2025-09-12	JAMF	10.83	1.45
+ATRBreakoutShort	2025-09-12	MYGN	7.94	1.36
+ATRBreakoutShort	2025-09-12	OPEN	11.53	4.97
+ATRBreakoutShort	2025-09-12	RMBS	92.65	16.05
+ATRBreakoutShort	2025-09-12	RVMD	48.09	7.39
+ATRBreakoutShort	2025-09-12	WBD	17.89	3.88
+SecondDayPlayLong	2025-09-12	AEI	3.1	0.7
+SecondDayPlayLong	2025-09-12	GDS	36.52	2.26
+SecondDayPlayLong	2025-09-12	HOLO	4.89	0.36
+SecondDayPlayLong	2025-09-12	OPEN	9.06	1.64
+SecondDayPlayLong	2025-09-12	OXM	48.61	3
+SecondDayPlayLong	2025-09-12	PROK	2.6	0.4
+SecondDayPlayLong	2025-09-12	PSKY	15.79	1.8
+SecondDayPlayLong	2025-09-12	RCAT	10.22	1
+SecondDayPlayLong	2025-09-12	RMBS	83.92	6.07
+SecondDayPlayLong	2025-09-12	RVMD	44.64	2.22
+Second_Day_Short	2025-09-12	SANM	120.25	2.75
+Second_Day_Short	2025-09-12	TVTX	26.35	1.53
+Second_Day_Short	2025-09-12	WYFI	21.85	1.55

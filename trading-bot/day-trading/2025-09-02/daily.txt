@@ -1,0 +1,14 @@
+Strategy	Date	Symbol	LmtPrice	AuxPrice
+ATRBreakoutLong	2025-09-01	DLTR	107.07	97.83
+ATRBreakoutLong	2025-09-01	MNMD	8.36	6.34
+SecondDayPlayLong	2025-09-01	DIN	23.5	23.04
+Second_Day_Short	2025-09-01	AMSC	51.7	53.66
+Second_Day_Short	2025-09-01	BBW	64.62	69
+Second_Day_Short	2025-09-01	BILL	48.01	49.84
+Second_Day_Short	2025-09-01	CELC	53.09	55
+Second_Day_Short	2025-09-01	CPRI	21.13	21.71
+Second_Day_Short	2025-09-01	KRMN	54.38	55.69
+Second_Day_Short	2025-09-01	MXL	16.09	16.54
+Second_Day_Short	2025-09-01	NTAP	115.22	118.24
+Second_Day_Short	2025-09-01	RMBS	76.93	80.79
+Second_Day_Short	2025-09-01	TSLA	340.22	348.75

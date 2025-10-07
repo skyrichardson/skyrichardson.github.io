@@ -1,0 +1,2 @@
+ - NUTR order rejected: closing-only status
+ - PLUG: my fill to close this was much worse than the system. 4.21 vs 4.13
