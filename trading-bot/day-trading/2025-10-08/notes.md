@@ -1,0 +1,1 @@
+ - I discovered I was submitting take-profit orders as Limit orders instead of Stop orders.

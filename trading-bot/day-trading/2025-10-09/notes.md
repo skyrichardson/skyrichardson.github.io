@@ -1,0 +1,2 @@
+ - HIT: closing-only status
+ - [ab-trader](https://discord.com/channels/842788888615714816/1302388437470543992/1425236550895276173) kindly suggested using `MOC` orders. This has resulted in better fills
