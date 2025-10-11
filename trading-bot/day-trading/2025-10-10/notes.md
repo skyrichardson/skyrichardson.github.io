@@ -1,5 +1,5 @@
 - ELL not available for short sale
-- Error with price target order means SUGP, SERV, SYRE, PATH, 
+- Error with price target order means SUGP, SERV, SYRE, PATH, so the trades were opened and then immediately closed. Whoops!
 
 EXK (short) $90  
 USAU (short) $31  
