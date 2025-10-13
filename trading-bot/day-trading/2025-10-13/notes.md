@@ -1,0 +1,2 @@
+ - No orders rejected by broker
+ - TRON and GWH shares to short unavailable
