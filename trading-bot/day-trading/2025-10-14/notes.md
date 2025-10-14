@@ -1,0 +1,1 @@
+- FMCC: Order rejected - reason:Not allowed to open a position: no trading permission.
