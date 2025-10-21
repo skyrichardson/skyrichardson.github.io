@@ -1,0 +1,1 @@
+Bot did not trade these setups.
