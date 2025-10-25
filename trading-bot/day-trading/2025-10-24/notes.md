@@ -1,0 +1,1 @@
+DOGZ: closing-only status  
