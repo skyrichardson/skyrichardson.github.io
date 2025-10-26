@@ -1,0 +1,5 @@
+ - SLDB alert 2025-10-08 11:40 ET. Resubmitted order the following morning (to chase it)
+ - LXEO gapped up on 2025-10-07 and best fill was 8.04 even though the setup stop price was 7.01.  
+ - The momo fills for my trades are different to the system because these are BUY stop orders and reflect normal slippage.
+ - The SELL stop prices for my trades also reflect slippage which the system trades do not.
+ - My trades were closed uisng market orders at market open. However i am switchting to market opers with opening price guarantee (OPG).  

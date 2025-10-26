@@ -1,0 +1,15 @@
+ATOM,pullback,long,4.42,2025-10-10,3.78,4.41
+DFLI,pullback,long,1.35,2025-10-06,0.528,1.28
+DNA,pullback,long,14.07,2025-10-10,11.59,13.99
+LKNCY,pullback,long,39.21,2025-10-10,37.3,39.9
+PFE,pullback,long,25.62,2025-10-09,23.64,24.84
+AHR,mean_reversion,long,40.5,2025-10-06,35.72,40.53
+CUK,mean_reversion,long,25.82,2025-10-06,19.59,25.69
+LIND,mean_reversion,long,12.21,2025-10-06,8.99,11.9
+TPB,mean_reversion,long,86.36,2025-10-06,61.72,88.48
+WWW,mean_reversion,long,24.66,2025-10-06,16.47,25.01
+FSFG,momo,long,31.83,2025-10-06,31.27,31.27
+LXEO,momo,long,8.04,2025-10-07,6.78,8.36
+SLDB,momo,long,6.36,2025-10-08,6.06,6.06
+WTTR,momo,long,11,2025-10-06,10.7,10.7
+XGN,momo,long,11.15,2025-10-09,10.84,10.84
