@@ -1,0 +1,11 @@
+TE,pullback,long,3.21,2025-10-14,2.47,4.54
+ONMD,pullback,long,2.55,2025-10-16,1.41,2.53
+PHIN,mean_reversion,long,51,2025-10-14,41.12,53.27
+VBTX,mean_reversion,long,30.03,2025-10-16,24.34,30.26
+INSW,mean_reversion,long,42.74,2025-10-14,34.35,46.33
+LVS,mean_reversion,long,48.97,2025-10-15,38.73,49.89
+AMGN,momo,long,297.63,2025-10-15,292.64,299.48
+BRKR,momo,long,37.25,2025-10-15,35.74,37.52
+IPX,momo,long,56.76,2025-10-13,55.04,55.04
+USPH,momo,long,91.16,2025-10-14,89.16,89.16
+TIIAY,momo,long,5.85,2025-10-16,5.6,5.88
