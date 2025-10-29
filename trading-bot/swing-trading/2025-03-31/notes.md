@@ -1,0 +1,1 @@
+2025-04-02 President Trump announced the "Liberation Day Tarrif's".

@@ -1,0 +1,7 @@
+CNXC,pullback,long,50.98,2025-04-03,44.64,45.31
+WOR,pullback,long,45.43,2025-04-04,40.09,44.64
+RBC,mean_reversion,long,318.07,2025-03-31,283.51,297.28
+CRSR,mean_reversion,long,8.76,2025-03-31,6.39,6.39
+LEU,mean_reversion,long,62,2025-03-31,49,50.75
+META,mean_reversion,long,561.12,2025-03-31,471.50,484.4
+AVGO,mean_reversion,long,160.87,2025-03-31,121.65,143.9

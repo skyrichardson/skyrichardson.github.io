@@ -1,0 +1,5 @@
+Symbol	Entry	Stop
+AEVA	5.46	4.19
+CNXC	50.98	44.64
+SLNO	60.92	48.22
+WOR	45.43	40.09
