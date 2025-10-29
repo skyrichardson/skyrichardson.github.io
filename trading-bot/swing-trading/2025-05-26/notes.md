@@ -1,0 +1,1 @@
+Unable to get data for SGMA. SigmaTron (SGMA): Was delisted from the NASDAQ on July 28, 2025, after being acquired.  
