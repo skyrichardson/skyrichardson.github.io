@@ -1,0 +1,10 @@
+ARRY,pullback,long,7.31,2025-05-19,6.35,6.35
+SPCE,pullback,long,4.45,2025-05-19,3.10,3.78
+QS,pullback,long,4.5,2025-05-19,4.14,4.14
+SFIX,pullback,long,4.08,2025-05-19,3.76,4.26
+PSX,pullback,long,121.82,2025-05-19,117.30,117.30
+CI,mean_reversion,long,315.78,2025-05-19,254.97,313.8
+SR,mean_reversion,long,72.32,2025-05-19,62.05,73.51
+EXC,mean_reversion,long,43.50,2025-05-19,37.02,43.44
+CPK,mean_reversion,long,121.06,2025-05-19,98.81,121.05
+KRYS,mean_reversion,long,126.15,2025-05-21,91.79,126.72

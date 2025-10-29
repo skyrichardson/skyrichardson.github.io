@@ -1,0 +1,4 @@
+Symbol	Entry	Stop
+ALHC	14.88	8.87
+BRO	108.75	90.72
+PPC	44.77	34.41

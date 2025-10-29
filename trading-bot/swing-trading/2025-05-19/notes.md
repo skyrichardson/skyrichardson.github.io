@@ -1,0 +1,1 @@
+Markets closed for Memorial Day on May 26, 2025.
