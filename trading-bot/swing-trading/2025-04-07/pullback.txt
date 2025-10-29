@@ -1,0 +1,2 @@
+Symbol	Entry	Stop
+ALMS	7.85	5.07

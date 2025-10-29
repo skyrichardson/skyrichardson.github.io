@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>2025-04-21 Swing Trading Performance | Trading Bot</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body class="">
+  <nav class="navbar navbar-expand bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/trading-bot/">Trading Bot</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/trading-bot/swing-trading/">Swing Trading</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/trading-bot/day-trading/">Day Trading</a>
+        </li>
+    </div>
+  </div>
+</nav>
+  <div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+      <ol class="breadcrumb mt-2">
+        <li class="breadcrumb-item"><a href="/trading-bot/swing-trading/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">2025-04-21</li>
+      </ol>
+    </nav>
+    <div class="" style="max-width:700px">
+        <div id="charts-carousel" class="carousel slide">
+          <div class="carousel-inner">
+            <div id="dbi" class="carousel-item active">
+              <img src="aon_chart.png" aria-label="Placeholder: First slide" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 1 of 5</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 1 of 5</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="atex_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 2 of 5</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 2 of 5</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="mdgl_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 3 of 5</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 3 of 5</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="nsp_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 4 of 5</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 4 of 5</text></img>
+            </div>
+            
+            <div class="carousel-item">
+              <img src="yum_chart.png" aria-label="Placeholder: slide long" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100 img-fluid" height="500" preserveAspectRatio="xMidYMid slice" role="img" width="700" xmlns="http://www.w3.org/2000/svg"><title>Chart 5 of 5</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em">Chart 5 of 5</text></img>
+            </div>
+            
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#charts-carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#charts-carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+        </div>
+    </div>
+    <!-- table -->
+    <div class="table-responsive" style="max-width:700px">
+      <table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Symbol</th>
+      <th scope="col">Strategy</th>
+      <th scope="col">Shares</th>
+      <th scope="col">Entry</th>
+      <th scope="col">Stop</th>
+      <th scope="col">Exit</th>
+      <th scope="col">Gain/Loss</th>
+    </tr>
+  </thead>
+  <tbody>
+<!--    <tr>-->
+<!--      <th scope="row">-->
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DBI</a>-->
+<!--      </th>-->
+<!--      <td>pullback</td>-->
+<!--      <td>100</td>-->
+<!--      <td>4.21</td>-->
+<!--      <td>3.65</td>-->
+<!--      <td>4.48</td>-->
+<!--      <td>$270</td>-->
+<!--    </tr>-->
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">AON</a>
+      </th>
+      <td>mean_reversion</td>
+      <td>11</td>
+      <td>357.32</td>
+      <td>322.67</td>
+      <td>Stop triggered</td>
+      <td  class="text-danger">-$381</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="1">ATEX</a>
+      </th>
+      <td>mean_reversion</td>
+      <td>128</td>
+      <td>31.17</td>
+      <td>24.55</td>
+      <td>29.15</td>
+      <td  class="text-danger">-$258</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="2">MDGL</a>
+      </th>
+      <td>mean_reversion</td>
+      <td>14</td>
+      <td>283.33</td>
+      <td>219.19</td>
+      <td>330.06</td>
+      <td >$654</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="3">NSP</a>
+      </th>
+      <td>mean_reversion</td>
+      <td>52</td>
+      <td>76.80</td>
+      <td>64.13</td>
+      <td>78.09</td>
+      <td >$67</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="4">YUM</a>
+      </th>
+      <td>mean_reversion</td>
+      <td>28</td>
+      <td>139.85</td>
+      <td>126.25</td>
+      <td>145.88</td>
+      <td >$168</td>
+    </tr>
+    
+    <tr>
+      <td colspan="6" class="text-end">Total:</td>
+      <td ><strong>$250</strong></td>
+    </tr>
+    <tr>
+      <td colspan="5">Available equity: $60,000 (up to 15 trades)</td>
+      <td class="text-end">Change in equity:</td>
+      <td><strong>0.42%*</strong></td>
+    </tr>
+      <tr>
+      <td colspan="6" class="text-end">SPY benchmark:</td>
+      <td>5.8%</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="text-muted small text-end">
+        * Not including trade fee's and slippage.
+      </div>
+    
+    <div class="text-muted small text-end">
+        <a href="https://www.statsedgetrading.com">Stats Edge Trading</a> members can see the Weekly Swing
+        Ideas <a href="https://michaelnausscmt.substack.com/p/trading-plan-for-next-week-40f ">here</a>.
+    </div>
+    
+    </div>
+
+    
+    <div class="table-responsive mt-5" style="max-width:700px">
+        <h4>Trades not taken due to max of 5 trades per strategy rule</h4>
+      <table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Symbol</th>
+      <th scope="col">Strategy</th>
+      <th scope="col">Shares</th>
+      <th scope="col">Entry</th>
+      <th scope="col">Stop</th>
+      <th scope="col">Exit</th>
+      <th scope="col">Gain/Loss</th>
+    </tr>
+  </thead>
+  <tbody>
+<!--    <tr>-->
+<!--      <th scope="row">-->
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DBI</a>-->
+<!--      </th>-->
+<!--      <td>pullback</td>-->
+<!--      <td>100</td>-->
+<!--      <td>4.21</td>-->
+<!--      <td>3.65</td>-->
+<!--      <td>4.48</td>-->
+<!--      <td>$270</td>-->
+<!--    </tr>-->
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="0">DGX</a>-->
+          DGX
+      </th>
+      <td>mean_reversion</td>
+      <td>24</td>
+      <td>160.27</td>
+      <td>144.91</td>
+      <td>173.12</td>
+      <td >$308</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="1">MDT</a>-->
+          MDT
+      </th>
+      <td>mean_reversion</td>
+      <td>49</td>
+      <td>80.98</td>
+      <td>72.97</td>
+      <td>83.9</td>
+      <td >$143</td>
+    </tr>
+    
+    <tr>
+      <th scope="row">
+<!--        <a href="#charts-carousel" data-bs-target="#charts-carousel" data-bs-slide-to="2">PBH</a>-->
+          PBH
+      </th>
+      <td>mean_reversion</td>
+      <td>51</td>
+      <td>78.21</td>
+      <td>69.64</td>
+      <td>80.73</td>
+      <td >$128</td>
+    </tr>
+    
+  </tbody>
+</table>
+    </div>
+    
+
+    
+
+    
+  </div>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+       })
+      });
+
+  </script>
+  </body>
+</html>
