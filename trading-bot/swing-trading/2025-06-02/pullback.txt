@@ -1,0 +1,6 @@
+Symbol	Entry	Stop
+ACDC	7.41	6.28
+UHG	2.54	1.98
+IMNN	1.77	0.85
+PAYS	4	3.45
+NUS	8.06	7.31
