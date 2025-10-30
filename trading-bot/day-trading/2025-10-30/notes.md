@@ -1,0 +1,1 @@
+CAKE and DUOL likely triggered after 2:00 PM ET which is the cutoff time for the bot to open new trades.
