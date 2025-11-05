@@ -1,0 +1,11 @@
+CELZ,pullback,long,4.26,2025-10-29,3.51,3.51
+PMTS,pullback,long,16.46,2025-10-28,15.1,15.56
+SWX,pullback,long,80.31,2025-10-28,78.5,78.5
+AAL,pullback,long,12.87,2025-10-28,11.87,13.09
+NEGG,pullback,long,56.82,2025-10-27,43,83.59
+WPM,mean_reversion,long,92.61,2025-10-28,66.12,96.52
+LNTH,momo,long,57.94,2025-10-27,55.84,55.84
+MATX,momo,long,95.6,2025-10-27,93.06,100.53
+PINE,momo,long,13.98,2025-10-27,13.76,14.64
+REGN,momo,long,588.71,2025-10-28,574.73,657.46
+GAIN,momo,long,14.06,2025-10-28,13.89,13.89

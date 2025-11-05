@@ -1,0 +1,3 @@
+Symbol	Enrty	Stop
+WPM	92.61	66.12
+BBW	53.79	34.29

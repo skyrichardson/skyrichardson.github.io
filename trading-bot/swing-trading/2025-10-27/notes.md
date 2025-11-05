@@ -1,0 +1,1 @@
+First week using actual capital (not paper trading). Reduced risk buy 50% so performaance was actually same as the system.  
