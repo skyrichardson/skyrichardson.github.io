@@ -1,0 +1,1 @@
+Did not trade. Email from Michael received after I had gone to bed.
