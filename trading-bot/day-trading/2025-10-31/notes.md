@@ -1,0 +1,1 @@
+WKEY: Order rejected - reason:The contract is not available for short sale.
