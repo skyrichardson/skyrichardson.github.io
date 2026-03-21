@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>2026-01-13 | Seasonal Stock Trades</title>
+  </head>
+  <body class="container">
+    <h1 class="h3 my-3">Tuesday January 13, 2026 | Seasonal Stock Trades</h1>
+    <table class="table table-sm !table-striped !table-hover fs-xs">
+      <thead>
+      <tr>
+        
+            <th scope="col">Ticker</th>
+          
+            <th scope="col">Win %</th>
+          
+            <th scope="col">Target</th>
+          
+            <th scope="col">P/L</th>
+          
+            <th scope="col">Exit Date</th>
+          
+            <th scope="col">Reason</th>
+          
+            <th scope="col">ID</th>
+          
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <th scope="row">CHRW</th>
+          <td>75%</td>
+          <td>2.65%</td>
+          <td class="">2.65%</td>
+          <td>
+            2026-01-20
+            <i class="bi bi-info-circle"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               data-bs-html="true"
+               data-bs-title="1/13 - 1/23, P/L ratio: 2.9, Avg P/L: 2.65% vs -2.40%"
+            ></i>
+          </td>
+          <td><span class="badge text-bg-secondary">profit_target</span></td>
+          <td>
+            <a href="https://seasonaltrader.com/host/History/Stocks.aspx?trade=210358946&service_id=3" target="_blank" class="text-decoration-none">210358946 <i class="bi bi-box-arrow-up-right"></i></a>
+          </td>
+        <tr>
+      
+        <tr>
+          <th scope="row">O</th>
+          <td>77%</td>
+          <td>3.40%</td>
+          <td class="">3.4%</td>
+          <td>
+            2026-01-16
+            <i class="bi bi-info-circle"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               data-bs-html="true"
+               data-bs-title="1/13 - 1/31, P/L ratio: 3.6, Avg P/L: 3.40% vs -3.56%"
+            ></i>
+          </td>
+          <td><span class="badge text-bg-secondary">profit_target</span></td>
+          <td>
+            <a href="https://seasonaltrader.com/host/History/Stocks.aspx?trade=216503630&service_id=3" target="_blank" class="text-decoration-none">216503630 <i class="bi bi-box-arrow-up-right"></i></a>
+          </td>
+        <tr>
+      
+        <tr>
+          <th scope="row">RMD</th>
+          <td>76%</td>
+          <td>6.49%</td>
+          <td class="text-danger">-0.9%</td>
+          <td>
+            2026-01-23
+            <i class="bi bi-info-circle"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               data-bs-html="true"
+               data-bs-title="1/13 - 1/23, P/L ratio: 5.5, Avg P/L: 6.49% vs -3.44%"
+            ></i>
+          </td>
+          <td><span class="badge text-bg-danger">time_stop</span></td>
+          <td>
+            <a href="https://seasonaltrader.com/host/History/Stocks.aspx?trade=217552767&service_id=3" target="_blank" class="text-decoration-none">217552767 <i class="bi bi-box-arrow-up-right"></i></a>
+          </td>
+        <tr>
+      
+    </tbody>
+    </table>
+      <!-- Example Code Start-->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4>Notes</h4>
+          <ul>
+            <li>
+              Search: Win rate: 75, Stop: 3, Days in trade: 25
+            </li>
+            <li>
+              Long setups only. Setup must have a trade count of 24 or more. Stock must be in an uptrend (using Jake's 8OC indicator).
+            </li>
+            <li>
+              "Don't Sell Stocks on Monday" is a classic 1986 investment book written by Yale Hirsch. Hence anytrades that would exit on a Monday is rolled forward to Tuesday.
+            </li>
+            <li>
+              Learn to trade this method by visiting
+              <a href="https://seasonaltrader.com" class="text-decoration-none">seasonaltrader.com <i class="bi bi-box-arrow-up-right"></i></a>.
+            </li>
+          </ul>
+
+        </div>
+      </div>
+      <!-- Example Code End -->
+    </body>
+  </body>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(el => new bootstrap.Tooltip(el));
+</script>
+</html>
