@@ -1,0 +1,6 @@
+date,orb_high,orb_low,short_leg_strike,short_leg_right,short_leg_mid,long_leg_strike,long_leg_right,long_leg_mid,net_credit,entry_time,exit_time,exit_type,hold_minutes,true_pnl
+2026-04-20,7120.67,7105.65,7105.0,C,12.5,7110.0,C,10.1,240.0,10:45,15:41,profit_target,296,130.0
+2026-04-21,7129.29,7111.05,7140.0,P,15.1,7135.0,P,12.7,240.0,10:15,16:00,expired,345,-260.0
+2026-04-22,7117.32,7106.28,7130.0,P,14.8,7125.0,P,12.6,220.0,11:00,15:51,profit_target,291,145.0
+2026-04-23,7130.58,7116.12,7140.0,P,14.2,7135.0,P,11.8,240.0,10:45,16:00,expired,315,-260.0
+2026-04-24,7137.12,7117.82,7145.0,P,14.9,7140.0,P,12.5,240.0,11:00,11:45,profit_target,45,125.0

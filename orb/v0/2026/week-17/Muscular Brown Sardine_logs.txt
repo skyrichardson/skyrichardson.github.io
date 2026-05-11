@@ -1,0 +1,91 @@
+Launching analysis for 28d2569b2a4c0772abdae0677e0557d5 with LEAN Engine v2.5.0.0.17714
+2026-04-20 09:29:00 2026-04-20 ── Daily state reset
+2026-04-20 09:45:00 08:45  Opening range set – High=7120.67  Low=7105.65
+2026-04-20 10:00:00 09:00  BULLISH breakout confirmed. Close=7121.56 > ORB High=7120.67
+2026-04-20 10:00:00 Best available net credit $2.40 is below target $2.40 — skipping entry
+2026-04-20 10:45:00 09:45  BEARISH breakout confirmed. Close=7104.81 < ORB Low=7105.65
+2026-04-20 10:45:00 Strike selected by net credit: Call 7105  Net credit=2.50  Target=2.40  Underlying=7104.81  (OTM)
+2026-04-20 10:45:00 Order fill – ID=1  Symbol=SPXW  260420C07105000  Qty=-1.0  Price=12.50  traded_today=False  pending_entry=True
+2026-04-20 10:45:00 Entry confirmed – Short fill=12.50  Long fill=10.10  Net credit=$240.00
+2026-04-20 10:45:00 Order fill – ID=2  Symbol=SPXW  260420C07110000  Qty=1.0  Price=10.10  traded_today=True  pending_entry=False
+2026-04-20 10:45:00 BEAR CALL SPREAD submitted – Sell 7105.0C / Buy 7110.0C
+2026-04-20 15:41:00 Order fill – ID=3  Symbol=SPXW  260420C07105000  Qty=1.0  Price=1.65  traded_today=True  pending_entry=False
+2026-04-20 15:41:00 Exit fills confirmed – position flat
+2026-04-20 15:41:00 Order fill – ID=4  Symbol=SPXW  260420C07110000  Qty=-1.0  Price=0.55  traded_today=True  pending_entry=False
+2026-04-20 15:41:00 Exit fills confirmed – position flat
+2026-04-20 15:41:00 Trade recorded – profit_target  P&L=$130.00  Total records: 1
+2026-04-20 15:41:00 PROFIT TARGET hit – P&L=$130.00  Target=$120.00
+2026-04-20 15:41:00 Close order submitted
+2026-04-21 09:29:00 2026-04-21 ── Daily state reset
+2026-04-21 09:45:00 08:45  Opening range set – High=7129.29  Low=7111.05
+2026-04-21 10:00:00 09:00  BULLISH breakout confirmed. Close=7131.64 > ORB High=7129.29
+2026-04-21 10:00:00 Best available net credit $2.35 is below target $2.40 — skipping entry
+2026-04-21 10:15:00 09:15  BULLISH breakout confirmed. Close=7134.21 > ORB High=7129.29
+2026-04-21 10:15:00 Strike selected by net credit: Put 7140  Net credit=2.55  Target=2.40  Underlying=7134.21  (ITM)
+2026-04-21 10:15:00 Order fill – ID=5  Symbol=SPXW  260421P07140000  Qty=-1.0  Price=15.10  traded_today=False  pending_entry=True
+2026-04-21 10:15:00 Entry confirmed – Short fill=15.10  Long fill=12.70  Net credit=$240.00
+2026-04-21 10:15:00 Order fill – ID=6  Symbol=SPXW  260421P07135000  Qty=1.0  Price=12.70  traded_today=True  pending_entry=False
+2026-04-21 10:15:00 BULL PUT SPREAD submitted – Sell 7140.0P / Buy 7135.0P
+2026-04-22 01:00:00 Order fill – ID=7  Symbol=SPXW  260421P07135000  Qty=-1.0  Price=0.00  traded_today=True  pending_entry=False
+2026-04-22 01:00:00 Order fill – ID=8  Symbol=SPXW  260421P07140000  Qty=1.0  Price=0.00  traded_today=True  pending_entry=False
+2026-04-22 01:00:00 Exit fills confirmed – position flat
+2026-04-22 01:00:00 Trade recorded – expired  P&L=$-260.00  Total records: 2
+2026-04-22 01:00:00 Spread expired – SPX=7064.31  Credit=$240.00  Settlement cost=$-500.00  P&L=$-260.00  Cumulative=$-260.00
+2026-04-22 09:29:00 2026-04-22 ── Daily state reset
+2026-04-22 09:45:00 08:45  Opening range set – High=7117.32  Low=7106.28
+2026-04-22 10:15:00 09:15  BULLISH breakout confirmed. Close=7124.88 > ORB High=7117.32
+2026-04-22 10:15:00 Best available net credit $2.30 is below target $2.40 — skipping entry
+2026-04-22 10:30:00 09:30  BULLISH breakout confirmed. Close=7129.04 > ORB High=7117.32
+2026-04-22 10:30:00 Best available net credit $2.35 is below target $2.40 — skipping entry
+2026-04-22 10:45:00 09:45  BULLISH breakout confirmed. Close=7120.93 > ORB High=7117.32
+2026-04-22 10:45:00 Best available net credit $2.25 is below target $2.40 — skipping entry
+2026-04-22 11:00:00 10:00  BULLISH breakout confirmed. Close=7124.48 > ORB High=7117.32
+2026-04-22 11:00:00 Strike selected by net credit: Put 7130  Net credit=2.40  Target=2.40  Underlying=7124.48  (ITM)
+2026-04-22 11:00:00 Order fill – ID=9  Symbol=SPXW  260422P07130000  Qty=-1.0  Price=14.80  traded_today=False  pending_entry=True
+2026-04-22 11:00:00 Entry confirmed – Short fill=14.80  Long fill=12.60  Net credit=$220.00
+2026-04-22 11:00:00 Order fill – ID=10  Symbol=SPXW  260422P07125000  Qty=1.0  Price=12.60  traded_today=True  pending_entry=False
+2026-04-22 11:00:00 BULL PUT SPREAD submitted – Sell 7130.0P / Buy 7125.0P
+2026-04-22 15:51:00 Order fill – ID=11  Symbol=SPXW  260422P07130000  Qty=1.0  Price=0.90  traded_today=True  pending_entry=False
+2026-04-22 15:51:00 Exit fills confirmed – position flat
+2026-04-22 15:51:00 Order fill – ID=12  Symbol=SPXW  260422P07125000  Qty=-1.0  Price=0.15  traded_today=True  pending_entry=False
+2026-04-22 15:51:00 Exit fills confirmed – position flat
+2026-04-22 15:51:00 Trade recorded – profit_target  P&L=$145.00  Total records: 3
+2026-04-22 15:51:00 PROFIT TARGET hit – P&L=$145.00  Target=$110.00
+2026-04-22 15:51:00 Close order submitted
+2026-04-23 09:29:00 2026-04-23 ── Daily state reset
+2026-04-23 09:45:00 08:45  Opening range set – High=7130.58  Low=7116.12
+2026-04-23 10:45:00 09:45  BULLISH breakout confirmed. Close=7133.68 > ORB High=7130.58
+2026-04-23 10:45:00 Strike selected by net credit: Put 7140  Net credit=2.60  Target=2.40  Underlying=7133.68  (ITM)
+2026-04-23 10:45:00 Order fill – ID=13  Symbol=SPXW  260423P07140000  Qty=-1.0  Price=14.20  traded_today=False  pending_entry=True
+2026-04-23 10:45:00 Entry confirmed – Short fill=14.20  Long fill=11.80  Net credit=$240.00
+2026-04-23 10:45:00 Order fill – ID=14  Symbol=SPXW  260423P07135000  Qty=1.0  Price=11.80  traded_today=True  pending_entry=False
+2026-04-23 10:45:00 BULL PUT SPREAD submitted – Sell 7140.0P / Buy 7135.0P
+2026-04-24 01:00:00 Order fill – ID=15  Symbol=SPXW  260423P07135000  Qty=-1.0  Price=0.00  traded_today=True  pending_entry=False
+2026-04-24 01:00:00 Order fill – ID=16  Symbol=SPXW  260423P07140000  Qty=1.0  Price=0.00  traded_today=True  pending_entry=False
+2026-04-24 01:00:00 Exit fills confirmed – position flat
+2026-04-24 01:00:00 Trade recorded – expired  P&L=$-260.00  Total records: 4
+2026-04-24 01:00:00 Spread expired – SPX=7108.04  Credit=$240.00  Settlement cost=$-500.00  P&L=$-260.00  Cumulative=$-520.00
+2026-04-24 09:29:00 2026-04-24 ── Daily state reset
+2026-04-24 09:45:00 08:45  Opening range set – High=7137.12  Low=7117.82
+2026-04-24 11:00:00 10:00  BULLISH breakout confirmed. Close=7138.05 > ORB High=7137.12
+2026-04-24 11:00:00 Strike selected by net credit: Put 7145  Net credit=2.60  Target=2.40  Underlying=7138.05  (ITM)
+2026-04-24 11:00:00 Order fill – ID=17  Symbol=SPXW  260424P07145000  Qty=-1.0  Price=14.90  traded_today=False  pending_entry=True
+2026-04-24 11:00:00 Entry confirmed – Short fill=14.90  Long fill=12.50  Net credit=$240.00
+2026-04-24 11:00:00 Order fill – ID=18  Symbol=SPXW  260424P07140000  Qty=1.0  Price=12.50  traded_today=True  pending_entry=False
+2026-04-24 11:00:00 BULL PUT SPREAD submitted – Sell 7145.0P / Buy 7140.0P
+2026-04-24 11:45:00 Order fill – ID=19  Symbol=SPXW  260424P07145000  Qty=1.0  Price=7.60  traded_today=True  pending_entry=False
+2026-04-24 11:45:00 Exit fills confirmed – position flat
+2026-04-24 11:45:00 Order fill – ID=20  Symbol=SPXW  260424P07140000  Qty=-1.0  Price=6.10  traded_today=True  pending_entry=False
+2026-04-24 11:45:00 Exit fills confirmed – position flat
+2026-04-24 11:45:00 Trade recorded – profit_target  P&L=$125.00  Total records: 5
+2026-04-24 11:45:00 PROFIT TARGET hit – P&L=$125.00  Target=$120.00
+2026-04-24 11:45:00 Close order submitted
+2026-04-25 01:00:00 TRADE_SUMMARY_CSV_START
+2026-04-25 01:00:00 date,orb_high,orb_low,short_leg_strike,short_leg_right,short_leg_mid,long_leg_strike,long_leg_right,long_leg_mid,net_credit,entry_time,exit_time,exit_type,hold_minutes,true_pnl
+2026-04-25 01:00:00 2026-04-20,7120.67,7105.65,7105.0,C,12.5,7110.0,C,10.1,240.0,10:45,15:41,profit_target,296,130.0
+2026-04-25 01:00:00 2026-04-21,7129.29,7111.05,7140.0,P,15.1,7135.0,P,12.7,240.0,10:15,16:00,expired,345,-260.0
+2026-04-25 01:00:00 2026-04-22,7117.32,7106.28,7130.0,P,14.8,7125.0,P,12.6,220.0,11:00,15:51,profit_target,291,145.0
+2026-04-25 01:00:00 2026-04-23,7130.58,7116.12,7140.0,P,14.2,7135.0,P,11.8,240.0,10:45,16:00,expired,315,-260.0
+2026-04-25 01:00:00 2026-04-24,7137.12,7117.82,7145.0,P,14.9,7140.0,P,12.5,240.0,11:00,11:45,profit_target,45,125.0
+2026-04-25 01:00:00 TRADE_SUMMARY_CSV_END
+Algorithm Id:(28d2569b2a4c0772abdae0677e0557d5) completed in 43.88 seconds at 23k data points per second. Processing total of 997,081 data points.
