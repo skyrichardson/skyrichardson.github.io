@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ORB back and forward testing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script>
+        !function (t, e) {
+            var o, n, p, r;
+            e.__SV || (window.posthog && window.posthog.__loaded) || (window.posthog = e, e._i = [], e.init = function (i, s, a) {
+                function g(t, e) {
+                    var o = e.split(".");
+                    2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () {
+                        t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+                    }
+                }
+
+                (p = t.createElement("script")).type = "text/javascript", p.crossOrigin = "anonymous", p.async = !0, p.src = s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r);
+                var u = e;
+                for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) {
+                    var e = "posthog";
+                    return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e
+                }, u.people.toString = function () {
+                    return u.toString(1) + ".people (stub)"
+                }, o = "Ii init Di qi Sr Bi Zi Pi capture calculateEventProperties Yi register register_once register_for_session unregister unregister_for_session Xi getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Ji identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty Wi Vi createPersonProfile setInternalOrTestUser Gi Fi Ki opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing $i debug Tr Ui getPageViewId captureTraceFeedback captureTraceMetric Ri".split(" "), n = 0; n < o.length; n++) g(u, o[n]);
+                e._i.push([i, s, a])
+            }, e.__SV = 1)
+        }(document, window.posthog || []);
+        posthog.init('phc_kTqFT2ZUefSg3NjvXw6ryJvJ6fg5D9ADXNYhCH6fkPbo', {
+            api_host: 'https://us.i.posthog.com',
+            defaults: '2026-01-30',
+            person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+        })
+    </script>
+</head>
+<body class="d-flex flex-column vh-100">
+<nav class="navbar navbar-expand-sm bg-body-tertiary ">
+    <div class="container-fluid justify-content-start">
+        <a class="navbar-brand" href="/">ORB Back and Forward Testing</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="navbar-nav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link"-->
+<!--                           href="/contact">Contact</a>-->
+<!--                    </li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div id="content" class="container-lg !overflow-auto">
+<h3 class="mt-3">Week 18</h3>
+
+<table class="table table-sm !table-striped !table-hover fs-xs">
+    <thead>
+    <tr class="text-center">
+        
+        <th scope="col">
+            Date
+        </th>
+        
+        <th scope="col">
+            Spread
+        </th>
+        
+        <th scope="col">
+            ITM
+        </th>
+        
+        <th scope="col">
+            Entry
+        </th>
+        
+        <th scope="col">
+            Credit
+        </th>
+        
+        <th scope="col">
+            Exit
+        </th>
+        
+        <th scope="col">
+            PnL
+        </th>
+        
+    </tr>
+    </thead>
+    <tbody>
+    
+    <tr>
+        
+        <td>
+            2026-04-27
+            <svg
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                data-bs-html="true"
+                data-bs-title="No trade<br>Camping at Blackheath Glen Reserve."
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16"
+            >
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </td>
+        
+        
+        <td class="text-end">
+            <a tabindex="0" role="button" data-bs-toggle="popover"
+               data-bs-trigger="focus" data-bs-html="true"
+               data-bs-placement="right"
+               data-bs-content='<img src="../charts/trade_2026-04-27_1.png" height="602" width="790">'
+            >
+                0/0 Bear Call
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-graph-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"></path>
+                </svg>
+            </a>
+        </td>
+        <td class="text-end">-7151 points</td>
+        <td class="text-end"></td>
+        <td
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                data-bs-html="true"
+                data-bs-title="Short 0C Mid: 0.0<br>Long 0C Mid: 0.0"
+                class="text-end"
+        >
+            -0.0
+        </td>
+        
+        
+        <td class="text-end"></td>
+        
+        <td class="text-end">
+            
+            
+        </td>
+    <tr>
+        
+    <tr>
+        
+        <td>
+            2026-04-28
+            <svg
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                data-bs-html="true"
+                data-bs-title="-260.00<br>7125/7130 Bear call<br><br>10:46:25 -2.40<br>7125 C 12.30 -151.64<br>7130 C 9.90 -111.64<br><br>7129 7152<br>Backtest selected a higher short strike for same premium."
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16"
+            >
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </td>
+        
+        
+        <td class="text-end">
+            <a tabindex="0" role="button" data-bs-toggle="popover"
+               data-bs-trigger="focus" data-bs-html="true"
+               data-bs-placement="right"
+               data-bs-content='<img src="../charts/trade_2026-04-28_1.png" height="602" width="790">'
+            >
+                7130/7135 Bear Call
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-graph-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"></path>
+                </svg>
+            </a>
+        </td>
+        <td class="text-end">1 points</td>
+        <td class="text-end">10:45</td>
+        <td
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                data-bs-html="true"
+                data-bs-title="Short 7130C Mid: 11.7<br>Long 7135C Mid: 9.3"
+                class="text-end"
+        >
+            -2.4
+        </td>
+        
+        
+        <td class="text-end">13:20</td>
+        
+        <td class="text-end">
+            
+            <small><span class="badge text-bg-warning">-260.0</span></small>
+            
+            122.5
+        </td>
+    <tr>
+        
+    <tr>
+        
+        <td>
+            2026-04-29
+            <svg
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                data-bs-html="true"
+                data-bs-title="-175.00<br>7140/7135 Bull put<br><br>10:17:30 -2.30<br>7140 P 16.90 1,283.36<br>7135 P 14.60 -1,461.64<br><br>7122 7135<br>7135 close<br>Less than maximum loss because protective leg was ATM at close."
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16"
+            >
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </td>
+        
+        
+        <td class="text-end">
+            <a tabindex="0" role="button" data-bs-toggle="popover"
+               data-bs-trigger="focus" data-bs-html="true"
+               data-bs-placement="bottom"
+               data-bs-content='<img src="../charts/trade_2026-04-29_1.png" height="602" width="790">'
+            >
+                7145/7140 Bull Put
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-graph-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"></path>
+                </svg>
+            </a>
+        </td>
+        <td class="text-end">10 points</td>
+        <td class="text-end">10:30</td>
+        <td
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                data-bs-html="true"
+                data-bs-title="Short 7145P Mid: 17.5<br>Long 7140P Mid: 15.1"
+                class="text-end"
+        >
+            -2.4
+        </td>
+        
+        
+        <td class="text-end">EOD</td>
+        
+        <td class="text-end">
+            
+            <small><span class="badge text-bg-warning">-175.0</span></small>
+            
+            -260.0
+        </td>
+    <tr>
+        
+    <tr>
+        
+        <td>
+            2026-04-30
+            <svg
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                data-bs-html="true"
+                data-bs-title="-230.00<br>7135/7140 Bear call <br><br>10:13:35 -2.70<br>7135 C 20.10 -5,392.64<br>7140 C 17.40 5,159.36<br><br>7136 7170<br>7209 close"
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16"
+            >
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </td>
+        
+        
+        <td class="text-end">
+            <a tabindex="0" role="button" data-bs-toggle="popover"
+               data-bs-trigger="focus" data-bs-html="true"
+               data-bs-placement="right"
+               data-bs-content='<img src="../charts/trade_2026-04-30_1.png" height="602" width="790">'
+            >
+                7140/7145 Bear Call
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-graph-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"></path>
+                </svg>
+            </a>
+        </td>
+        <td class="text-end">4 points</td>
+        <td class="text-end">10:00</td>
+        <td
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                data-bs-html="true"
+                data-bs-title="Short 7140C Mid: 16.1<br>Long 7145C Mid: 13.9"
+                class="text-end"
+        >
+            -2.2
+        </td>
+        
+        
+        <td class="text-end">EOD</td>
+        
+        <td class="text-end">
+            
+            <small><span class="badge text-bg-warning">-230.0</span></small>
+            
+            -280.0
+        </td>
+    <tr>
+        
+    <tr>
+        
+        <td>
+            2026-05-01
+            <svg
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                data-bs-html="true"
+                data-bs-title="-270.00<br>7270/7265 Bull Put<br><br>10:07:17 -2.30<br>7270 P 12.70 -2,719.64<br>7265 P 10.40 2,446.36<br><br>7232 7251<br>7230 close<br>Should have been a 'No trade' as gap was greater than 30.<br>7209 prior close to 7251<br>Ok to trade bearish "
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16"
+            >
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </td>
+        
+        
+        <td class="text-end">
+            <a tabindex="0" role="button" data-bs-toggle="popover"
+               data-bs-trigger="focus" data-bs-html="true"
+               data-bs-placement="bottom"
+               data-bs-content='<img src="../charts/trade_2026-05-01_1.png" height="602" width="790">'
+            >
+                7270/7265 Bull Put
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-graph-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"></path>
+                </svg>
+            </a>
+        </td>
+        <td class="text-end">19 points</td>
+        <td class="text-end">10:00</td>
+        <td
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                data-bs-html="true"
+                data-bs-title="Short 7270P Mid: 13.4<br>Long 7265P Mid: 11.5"
+                class="text-end"
+        >
+            -1.9
+        </td>
+        
+        
+        <td class="text-end">EOD</td>
+        
+        <td class="text-end">
+            
+            <small><span class="badge text-bg-warning">-270.0</span></small>
+            
+            -310.0
+        </td>
+    <tr>
+        
+    </tbody>
+</table>
+
+<script>
+    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+    popovers.forEach(el => new bootstrap.Popover(el));
+</script>
+</div>
+
+<script>
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(el => new bootstrap.Tooltip(el));
+</script>
+</body>
+</html>
