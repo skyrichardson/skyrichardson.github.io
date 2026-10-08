@@ -1384,5 +1384,41 @@ liveTickSource.addEventListener('error', (evt) => {
   });
 })();
 </script>
+<style>
+  #brian-btn { font-size:11px; color:#9598a1; background:transparent; border:1px solid #2a2e39;
+               border-radius:4px; padding:2px 8px; cursor:pointer; line-height:1.5; }
+  #brian-btn:hover  { border-color:#3b82f6; color:#d1d4dc; }
+  #brian-btn.active { color:#60A5FA; border-color:#60A5FA; }
+  #brian-pane { display:none; flex:0 0 auto; max-height:50%; overflow:auto;
+                border-bottom:1px solid #2a2e39; background:#131722; overscroll-behavior:contain; }
+  #brian-pane.open { display:block; }
+  #brian-pane img  { display:block; max-width:100%; height:auto; margin:0 auto; }
+</style>
+<script>
+(() => {
+  const SRC = "2026-10-07-brian.png";
+  const container = document.getElementById('chart-container');
+  const pane = document.createElement('div');
+  pane.id = 'brian-pane';
+  pane.innerHTML = `<a href="${SRC}" target="_blank" rel="noopener"><img alt="Brian's chart"></a>`;
+  pane.querySelector('img').src = SRC;
+  container.before(pane);
+  const btn = document.createElement('button');
+  btn.id = 'brian-btn';
+  btn.type = 'button';
+  btn.title = 'Show/hide ' + SRC;
+  btn.textContent = 'Brian';
+  document.getElementById('ohlc-display').append(btn);
+  // Match the chart's width (the trades sidebar narrows it) and re-fit the chart.
+  const fit = () => { pane.style.width = container.style.width; };
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active', pane.classList.toggle('open'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  pane.querySelector('img').addEventListener('load', () => window.dispatchEvent(new Event('resize')));
+  window.addEventListener('resize', fit);
+  fit();
+})();
+</script>
 </body>
 </html>
