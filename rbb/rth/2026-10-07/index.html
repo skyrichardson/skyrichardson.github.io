@@ -1400,14 +1400,14 @@ liveTickSource.addEventListener('error', (evt) => {
   const container = document.getElementById('chart-container');
   const pane = document.createElement('div');
   pane.id = 'brian-pane';
-  pane.innerHTML = `<a href="${SRC}" target="_blank" rel="noopener"><img alt="Brian's chart"></a>`;
+  pane.innerHTML = `<a href="${SRC}" target="_blank" rel="noopener"><img alt="Benchmark chart"></a>`;
   pane.querySelector('img').src = SRC;
   container.before(pane);
   const btn = document.createElement('button');
   btn.id = 'brian-btn';
   btn.type = 'button';
   btn.title = 'Show/hide ' + SRC;
-  btn.textContent = 'Brian';
+  btn.textContent = 'Benchmark';
   document.getElementById('ohlc-display').append(btn);
   // Match the chart's width (the trades sidebar narrows it) and re-fit the chart.
   const fit = () => { pane.style.width = container.style.width; };
