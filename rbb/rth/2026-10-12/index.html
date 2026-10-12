@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8"/>
+  <!-- Prevents Google Translate -->
+  <meta name="google" content="notranslate">
+  <!-- Prevents Bing / Microsoft Translator -->
+  <meta name="microsoft" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>Bot1 live 2026-10-12</title>
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#131722; color:#d1d4dc; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      display:flex; flex-direction:column; height:100vh; height:100dvh; overflow:hidden;
+    }
+
+    html, body { overscroll-behavior:none; height:100%; }
+
+    #header {
+      padding:10px 16px; background:#1e222d; border-bottom:1px solid #2a2e39;
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    }
+    #header h1 { font-size:14px; font-weight:600; color:#d1d4dc; }
+
+    #ohlc-display { font-size:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .lbl          { color:#9598a1; font-size:11px; }
+
+    #vol-toggle-btn, #sound-toggle-btn {
+      font-size: 11px;
+      color: #9598a1;
+      background: transparent;
+      border: 1px solid #2a2e39;
+      border-radius: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    #vol-toggle-btn:hover, #sound-toggle-btn:hover   { border-color:#3b82f6; color:#d1d4dc; }
+    #vol-toggle-btn.active, #sound-toggle-btn.active { color:#60A5FA; border-color:#60A5FA; }
+    #d-time       { color:#9598a1; font-size:11px; margin-left:4px; }
+    #tz-wrap { position:relative; }
+    #tz-btn {
+      font-size:11px; color:#9598a1; background:transparent; border:1px solid #2a2e39;
+      border-radius:4px; padding:2px 8px; cursor:pointer; line-height:1.5;
+    }
+    #tz-btn:hover, #tz-btn[aria-expanded="true"] { border-color:#3b82f6; color:#d1d4dc; }
+    #tz-menu {
+      position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:170px;
+      background:#1e222d; border:1px solid #2a2e39; border-radius:6px; padding:4px 0;
+      box-shadow:0 6px 20px rgba(0,0,0,.4); list-style:none; display:none;
+    }
+    #tz-menu.open { display:block; }
+    #tz-menu li {
+      padding:6px 12px; font-size:12px; cursor:pointer; display:flex; gap:8px; align-items:center;
+    }
+    #tz-menu li:hover, #tz-menu li:focus { background:#2a3245; outline:none; }
+    #tz-menu li .tick { width:10px; color:#60A5FA; }
+    #tz-menu li .zone { color:#9598a1; margin-left:auto; font-size:11px; }
+
+    #legend { display:flex; gap:12px; font-size:11px; align-items:center; margin-left:auto; flex-wrap:wrap; }
+    .leg    { display:flex; align-items:center; gap:4px; }
+    .swatch { width:24px; height:3px; display:inline-block; border-radius:2px; }
+
+    /* ── Small screens: tighten spacing and drop lower-priority fields ──── */
+    @media (max-width: 640px) {
+      #header { padding:6px 8px; gap:8px; }
+      #header h1 { font-size:12px; }
+      #ohlc-display { font-size:11px; gap:6px; }
+      .lbl { font-size:10px; }
+      #d-time { display:none; }           /* shown on-demand via crosshair area instead */
+      /* EMA/UB/LB readouts are secondary to O/H/L/C/Vol on a phone; the
+         values are still computed each frame (see JS), just hidden from
+         the header row to keep it to one line. */
+      .ext-field { display:none; }
+      #legend { gap:8px; font-size:10px; }
+      #legend .leg-text { display:none; }  /* icon/swatch only, drop text labels */
+    }
+    @media (max-width: 420px) {
+      #legend { display:none; }           /* legend colors are learnable; reclaim the row on very small phones */
+    }
+
+    #overlay {
+      position:fixed; inset:0; background:#131722;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:12px; z-index:100;
+    }
+    #overlay.hidden { display:none; }
+    #overlay-msg  { font-size:14px; color:#9598a1; }
+    #overlay-err  { font-size:13px; color:#ef5350; max-width:560px; text-align:center; display:none; }
+    .spinner {
+      width:32px; height:32px; border:3px solid #2a2e39;
+      border-top-color:#3b82f6; border-radius:50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    #chart-container { width:100%; flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+    #price-chart     { width:100%; }
+    #volume-chart    { width:100%; border-top:1px solid #2a2e39; }
+  </style>
+</head>
+<body>
+
+  <div id="overlay">
+    <div class="spinner" id="spinner"></div>
+    <div id="overlay-msg">Loading chart data...</div>
+    <div id="overlay-err"></div>
+  </div>
+
+  <div id="header">
+    <h1>Bot1 live 2026-10-12</h1>
+    <div id="ohlc-display">
+      <span class="lbl">O</span><span id="d-open">-</span>
+      <span class="lbl">H</span><span id="d-high">-</span>
+      <span class="lbl">L</span><span id="d-low">-</span>
+      <span class="lbl">C</span><span id="d-close" style="color:#60A5FA">-</span>
+      <span class="ext-field"><span class="lbl">EMA8</span><span id="d-ema" style="color:#3b82f6">-</span></span>
+      <span class="ext-field"><span class="lbl">UB</span><span id="d-ub" style="color:#facc15">-</span></span>
+      <span class="ext-field"><span class="lbl">LB</span><span id="d-lb" style="color:#f97316">-</span></span>
+      <span class="lbl">Vol</span><span id="d-vol">-</span>
+      <span id="d-time"></span>
+      <span id="tz-wrap">
+        <button id="tz-btn" type="button" title="Display time zone" aria-haspopup="listbox" aria-expanded="false">Sydney &#9662;</button>
+        <ul id="tz-menu" role="listbox" aria-label="Display time zone"></ul>
+      </span>
+      <span class="ext-field" id="live-tick-wrap" style="display:flex;align-items:center;gap:4px;">
+        <span id="live-dot" style="width:7px;height:7px;border-radius:50%;background:#555;display:inline-block;"></span>
+        <span class="lbl">Live</span><span id="d-live" style="color:#a78bfa">-</span>
+      </span>
+      <button id="vol-toggle-btn" type="button" title="Show/hide volume pane">Vol</button>
+      <button id="sound-toggle-btn" type="button" title="Mute/unmute new-bar sounds">Sound</button>
+    </div>
+<!--    <div id="legend">-->
+<!--      <div class="leg"><span class="swatch" style="background:#facc15"></span><span class="leg-text">Upper band</span></div>-->
+<!--      <div class="leg"><span class="swatch" style="background:#f97316"></span><span class="leg-text">Lower band</span></div>-->
+<!--      <div class="leg"><span class="swatch" style="background:#2563EB"></span><span class="leg-text">EMA8</span></div>-->
+<!--      <div class="leg"><span style="color:#26a69a;font-size:15px">&#9650;</span><span class="leg-text"> Buy</span></div>-->
+<!--      <div class="leg"><span style="color:#ef5350;font-size:15px">&#9660;</span><span class="leg-text"> Sell</span></div>-->
+<!--      <div class="leg"><span style="color:#f59e0b;font-size:13px">&#9632;</span><span class="leg-text"> Exit</span></div>-->
+<!--    </div>-->
+  </div>
+
+  <div id="chart-container">
+    <div id="price-chart"></div>
+    <div id="volume-chart"></div>
+  </div>
+
+<style>#live-tick-wrap, #sound-toggle-btn { display:none !important; }</style>
+<script>
+// replay/chart.py: chart data built in; no Flask server, no live stream.
+(() => {
+  const DATA = {"bars":[{"time":1791756003,"open":7873.0,"high":7873.0,"low":7869.0,"close":7869.0,"volume":87},{"time":1791756014,"open":7868.75,"high":7869.0,"low":7865.0,"close":7865.0,"volume":62},{"time":1791756037,"open":7864.75,"high":7866.0,"low":7862.0,"close":7862.0,"volume":89},{"time":1791756081,"open":7861.75,"high":7865.25,"low":7861.25,"close":7865.25,"volume":165},{"time":1791756176,"open":7865.5,"high":7868.75,"low":7864.75,"close":7868.75,"volume":261},{"time":1791756372,"open":7869.0,"high":7871.5,"low":7867.5,"close":7871.5,"volume":313},{"time":1791757280,"open":7871.75,"high":7872.75,"low":7868.75,"close":7868.75,"volume":694},{"time":1791757994,"open":7868.5,"high":7872.25,"low":7868.25,"close":7872.25,"volume":445},{"time":1791759140,"open":7872.5,"high":7872.5,"low":7868.5,"close":7868.5,"volume":371},{"time":1791760232,"open":7868.25,"high":7871.25,"low":7867.25,"close":7871.25,"volume":461},{"time":1791760847,"open":7871.5,"high":7875.25,"low":7871.25,"close":7875.25,"volume":435},{"time":1791761350,"open":7875.5,"high":7878.5,"low":7874.5,"close":7878.5,"volume":576},{"time":1791761619,"open":7878.75,"high":7881.5,"low":7877.5,"close":7881.5,"volume":433},{"time":1791762469,"open":7881.75,"high":7881.75,"low":7877.75,"close":7877.75,"volume":799},{"time":1791763680,"open":7877.5,"high":7880.25,"low":7876.25,"close":7880.25,"volume":1804},{"time":1791764105,"open":7880.5,"high":7881.5,"low":7877.5,"close":7877.5,"volume":809},{"time":1791765198,"open":7877.25,"high":7880.5,"low":7876.5,"close":7880.5,"volume":1500},{"time":1791766208,"open":7880.75,"high":7880.75,"low":7876.75,"close":7876.75,"volume":1144},{"time":1791766852,"open":7876.5,"high":7879.5,"low":7875.5,"close":7879.5,"volume":1256},{"time":1791768219,"open":7879.75,"high":7882.5,"low":7878.5,"close":7878.5,"volume":2307},{"time":1791769185,"open":7878.25,"high":7880.75,"low":7876.75,"close":7880.75,"volume":1445},{"time":1791772098,"open":7881.0,"high":7883.75,"low":7879.75,"close":7883.75,"volume":2874},{"time":1791776995,"open":7884.0,"high":7885.5,"low":7881.5,"close":7885.5,"volume":3411},{"time":1791780494,"open":7885.75,"high":7887.0,"low":7883.0,"close":7887.0,"volume":2335},{"time":1791783717,"open":7887.25,"high":7887.25,"low":7883.25,"close":7883.25,"volume":2399},{"time":1791784960,"open":7883.0,"high":7884.75,"low":7880.75,"close":7880.75,"volume":1433},{"time":1791785417,"open":7880.5,"high":7880.75,"low":7876.75,"close":7876.75,"volume":825},{"time":1791788542,"open":7876.5,"high":7880.25,"low":7876.25,"close":7880.25,"volume":3801},{"time":1791790281,"open":7880.5,"high":7880.5,"low":7876.5,"close":7876.5,"volume":3315},{"time":1791790619,"open":7876.25,"high":7880.25,"low":7876.25,"close":7880.25,"volume":567},{"time":1791790758,"open":7880.5,"high":7883.5,"low":7879.5,"close":7883.5,"volume":448},{"time":1791792238,"open":7883.75,"high":7884.0,"low":7880.0,"close":7880.0,"volume":2664},{"time":1791792476,"open":7879.75,"high":7882.25,"low":7878.25,"close":7882.25,"volume":479},{"time":1791792604,"open":7882.5,"high":7882.5,"low":7878.5,"close":7878.5,"volume":246},{"time":1791794163,"open":7878.25,"high":7881.75,"low":7877.75,"close":7877.75,"volume":3136},{"time":1791794393,"open":7877.5,"high":7878.25,"low":7874.25,"close":7874.25,"volume":536},{"time":1791794793,"open":7874.0,"high":7875.5,"low":7871.5,"close":7871.5,"volume":987},{"time":1791795137,"open":7871.25,"high":7873.25,"low":7869.25,"close":7869.25,"volume":851},{"time":1791796464,"open":7869.0,"high":7870.5,"low":7866.5,"close":7870.5,"volume":3331},{"time":1791797624,"open":7870.75,"high":7873.25,"low":7869.25,"close":7869.25,"volume":2062},{"time":1791798170,"open":7869.0,"high":7870.0,"low":7866.0,"close":7866.0,"volume":1008},{"time":1791799417,"open":7865.75,"high":7869.25,"low":7865.25,"close":7869.25,"volume":1904},{"time":1791799899,"open":7869.5,"high":7869.5,"low":7865.5,"close":7865.5,"volume":646},{"time":1791800606,"open":7865.25,"high":7868.25,"low":7864.25,"close":7868.25,"volume":1007},{"time":1791801105,"open":7868.5,"high":7869.0,"low":7865.0,"close":7865.0,"volume":798},{"time":1791801305,"open":7864.75,"high":7867.75,"low":7863.75,"close":7867.75,"volume":513},{"time":1791802348,"open":7868.0,"high":7868.25,"low":7864.25,"close":7864.25,"volume":1439},{"time":1791802936,"open":7864.0,"high":7865.5,"low":7861.5,"close":7861.5,"volume":1246},{"time":1791803757,"open":7861.25,"high":7864.0,"low":7860.0,"close":7864.0,"volume":1483},{"time":1791805042,"open":7863.0,"high":7866.0,"low":7862.0,"close":7866.0,"volume":1039},{"time":1791805896,"open":7866.25,"high":7867.0,"low":7863.0,"close":7867.0,"volume":1386},{"time":1791806400,"open":7867.25,"high":7867.5,"low":7863.5,"close":7863.5,"volume":766},{"time":1791807007,"open":7863.25,"high":7867.25,"low":7863.25,"close":7867.25,"volume":1064},{"time":1791807992,"open":7867.5,"high":7870.0,"low":7866.0,"close":7866.0,"volume":2349},{"time":1791808204,"open":7865.75,"high":7867.5,"low":7863.5,"close":7863.5,"volume":541},{"time":1791808592,"open":7863.25,"high":7864.5,"low":7860.5,"close":7860.5,"volume":1157},{"time":1791808740,"open":7860.25,"high":7862.0,"low":7858.0,"close":7858.0,"volume":854},{"time":1791808888,"open":7857.75,"high":7861.75,"low":7857.75,"close":7861.75,"volume":748},{"time":1791809193,"open":7862.0,"high":7864.5,"low":7860.5,"close":7860.5,"volume":1412},{"time":1791809989,"open":7860.25,"high":7864.25,"low":7860.25,"close":7864.25,"volume":1459},{"time":1791810380,"open":7864.5,"high":7866.5,"low":7862.5,"close":7866.5,"volume":1332},{"time":1791811800,"open":7866.75,"high":7866.75,"low":7862.75,"close":7862.75,"volume":3827},{"time":1791811829,"open":7862.5,"high":7866.25,"low":7862.25,"close":7866.25,"volume":1826},{"time":1791811844,"open":7866.5,"high":7869.25,"low":7865.25,"close":7869.25,"volume":886},{"time":1791811877,"open":7869.5,"high":7870.0,"low":7866.0,"close":7866.0,"volume":1030},{"time":1791811965,"open":7865.75,"high":7868.25,"low":7864.25,"close":7864.25,"volume":2570},{"time":1791812034,"open":7864.0,"high":7867.75,"low":7863.75,"close":7867.75,"volume":1517},{"time":1791812086,"open":7868.0,"high":7868.0,"low":7864.0,"close":7864.0,"volume":1081},{"time":1791812133,"open":7863.75,"high":7867.25,"low":7863.25,"close":7867.25,"volume":1074},{"time":1791812450,"open":7867.5,"high":7869.75,"low":7865.75,"close":7865.75,"volume":4969},{"time":1791812835,"open":7865.5,"high":7868.25,"low":7864.25,"close":7864.25,"volume":5220},{"time":1791812892,"open":7864.0,"high":7864.5,"low":7860.5,"close":7864.5,"volume":1910},{"time":1791812918,"open":7864.75,"high":7864.75,"low":7860.75,"close":7860.75,"volume":444},{"time":1791813055,"open":7860.5,"high":7862.5,"low":7858.5,"close":7862.5,"volume":2452},{"time":1791813329,"open":7862.75,"high":7864.0,"low":7860.0,"close":7864.0,"volume":3194},{"time":1791813526,"open":7864.25,"high":7864.5,"low":7860.5,"close":7860.5,"volume":1875},{"time":1791813919,"open":7860.25,"high":7863.0,"low":7859.0,"close":7859.0,"volume":4502},{"time":1791814035,"open":7858.75,"high":7861.75,"low":7857.75,"close":7857.75,"volume":1724},{"time":1791814145,"open":7857.5,"high":7858.0,"low":7854.0,"close":7854.0,"volume":2069},{"time":1791814310,"open":7853.75,"high":7855.5,"low":7851.5,"close":7851.5,"volume":2816},{"time":1791814525,"open":7851.25,"high":7855.25,"low":7851.25,"close":7855.25,"volume":2596},{"time":1791814826,"open":7855.5,"high":7858.0,"low":7854.0,"close":7858.0,"volume":2970},{"time":1791815058,"open":7858.25,"high":7858.25,"low":7854.25,"close":7854.25,"volume":2426},{"time":1791815369,"open":7854.0,"high":7855.75,"low":7851.75,"close":7855.75,"volume":3461},{"time":1791815820,"open":7856.0,"high":7857.0,"low":7853.0,"close":7853.0,"volume":3793},{"time":1791816038,"open":7852.75,"high":7855.5,"low":7851.5,"close":7855.5,"volume":2133},{"time":1791816483,"open":7855.75,"high":7857.0,"low":7853.0,"close":7857.0,"volume":3408},{"time":1791817133,"open":7857.25,"high":7858.25,"low":7854.25,"close":7858.25,"volume":4356},{"time":1791818151,"open":7858.5,"high":7860.25,"low":7856.25,"close":7860.25,"volume":6100},{"time":1791818606,"open":7860.5,"high":7860.5,"low":7856.5,"close":7856.5,"volume":2531},{"time":1791819446,"open":7856.25,"high":7858.5,"low":7854.5,"close":7858.5,"volume":5349},{"time":1791819881,"open":7858.75,"high":7861.75,"low":7857.75,"close":7861.75,"volume":2474},{"time":1791820207,"open":7862.0,"high":7864.5,"low":7860.5,"close":7864.5,"volume":2335},{"time":1791821148,"open":7864.75,"high":7866.5,"low":7862.5,"close":7866.5,"volume":5405},{"time":1791821464,"open":7866.75,"high":7867.5,"low":7863.5,"close":7863.5,"volume":1875},{"time":1791822165,"open":7863.25,"high":7865.0,"low":7861.0,"close":7861.0,"volume":4333},{"time":1791822226,"open":7860.75,"high":7861.75,"low":7857.75,"close":7857.75,"volume":955},{"time":1791822378,"open":7857.5,"high":7858.75,"low":7854.75,"close":7854.75,"volume":1883},{"time":1791822645,"open":7854.5,"high":7858.5,"low":7854.5,"close":7858.5,"volume":2034},{"time":1791823392,"open":7858.75,"high":7860.25,"low":7856.25,"close":7856.25,"volume":3486},{"time":1791823809,"open":7856.0,"high":7857.25,"low":7853.25,"close":7853.25,"volume":2236},{"time":1791823868,"open":7853.0,"high":7853.75,"low":7849.75,"close":7849.75,"volume":1092},{"time":1791824025,"open":7849.5,"high":7853.5,"low":7849.5,"close":7853.5,"volume":1807},{"time":1791824737,"open":7853.75,"high":7854.5,"low":7850.5,"close":7854.5,"volume":5047},{"time":1791825894,"open":7854.75,"high":7855.75,"low":7851.75,"close":7851.75,"volume":4864},{"time":1791827184,"open":7851.5,"high":7854.25,"low":7850.25,"close":7854.25,"volume":5373},{"time":1791828043,"open":7854.5,"high":7855.75,"low":7851.75,"close":7851.75,"volume":3051},{"time":1791829295,"open":7851.5,"high":7852.75,"low":7848.75,"close":7848.75,"volume":5753},{"time":1791831030,"open":7848.5,"high":7852.25,"low":7848.25,"close":7848.25,"volume":7768},{"time":1791833451,"open":7848.0,"high":7850.25,"low":7846.25,"close":7850.25,"volume":11447},{"time":1791833696,"open":7850.5,"high":7853.25,"low":7849.25,"close":7853.25,"volume":1353},{"time":1791834602,"open":7853.5,"high":7856.5,"low":7852.5,"close":7856.5,"volume":5705},{"time":1791834870,"open":7856.75,"high":7858.5,"low":7854.5,"close":7854.5,"volume":3246},{"time":1791835170,"open":7854.25,"high":7858.0,"low":7854.0,"close":7858.0,"volume":7024}],"volume":[{"time":1791756003,"value":87,"color":"#ef535099"},{"time":1791756014,"value":62,"color":"#ef535099"},{"time":1791756037,"value":89,"color":"#ef535099"},{"time":1791756081,"value":165,"color":"#26a69a99"},{"time":1791756176,"value":261,"color":"#26a69a99"},{"time":1791756372,"value":313,"color":"#26a69a99"},{"time":1791757280,"value":694,"color":"#ef535099"},{"time":1791757994,"value":445,"color":"#26a69a99"},{"time":1791759140,"value":371,"color":"#ef535099"},{"time":1791760232,"value":461,"color":"#26a69a99"},{"time":1791760847,"value":435,"color":"#26a69a99"},{"time":1791761350,"value":576,"color":"#26a69a99"},{"time":1791761619,"value":433,"color":"#26a69a99"},{"time":1791762469,"value":799,"color":"#ef535099"},{"time":1791763680,"value":1804,"color":"#26a69a99"},{"time":1791764105,"value":809,"color":"#ef535099"},{"time":1791765198,"value":1500,"color":"#26a69a99"},{"time":1791766208,"value":1144,"color":"#ef535099"},{"time":1791766852,"value":1256,"color":"#26a69a99"},{"time":1791768219,"value":2307,"color":"#ef535099"},{"time":1791769185,"value":1445,"color":"#26a69a99"},{"time":1791772098,"value":2874,"color":"#26a69a99"},{"time":1791776995,"value":3411,"color":"#26a69a99"},{"time":1791780494,"value":2335,"color":"#26a69a99"},{"time":1791783717,"value":2399,"color":"#ef535099"},{"time":1791784960,"value":1433,"color":"#ef535099"},{"time":1791785417,"value":825,"color":"#ef535099"},{"time":1791788542,"value":3801,"color":"#26a69a99"},{"time":1791790281,"value":3315,"color":"#ef535099"},{"time":1791790619,"value":567,"color":"#26a69a99"},{"time":1791790758,"value":448,"color":"#26a69a99"},{"time":1791792238,"value":2664,"color":"#ef535099"},{"time":1791792476,"value":479,"color":"#26a69a99"},{"time":1791792604,"value":246,"color":"#ef535099"},{"time":1791794163,"value":3136,"color":"#ef535099"},{"time":1791794393,"value":536,"color":"#ef535099"},{"time":1791794793,"value":987,"color":"#ef535099"},{"time":1791795137,"value":851,"color":"#ef535099"},{"time":1791796464,"value":3331,"color":"#26a69a99"},{"time":1791797624,"value":2062,"color":"#ef535099"},{"time":1791798170,"value":1008,"color":"#ef535099"},{"time":1791799417,"value":1904,"color":"#26a69a99"},{"time":1791799899,"value":646,"color":"#ef535099"},{"time":1791800606,"value":1007,"color":"#26a69a99"},{"time":1791801105,"value":798,"color":"#ef535099"},{"time":1791801305,"value":513,"color":"#26a69a99"},{"time":1791802348,"value":1439,"color":"#ef535099"},{"time":1791802936,"value":1246,"color":"#ef535099"},{"time":1791803757,"value":1483,"color":"#26a69a99"},{"time":1791805042,"value":1039,"color":"#26a69a99"},{"time":1791805896,"value":1386,"color":"#26a69a99"},{"time":1791806400,"value":766,"color":"#ef535099"},{"time":1791807007,"value":1064,"color":"#26a69a99"},{"time":1791807992,"value":2349,"color":"#ef535099"},{"time":1791808204,"value":541,"color":"#ef535099"},{"time":1791808592,"value":1157,"color":"#ef535099"},{"time":1791808740,"value":854,"color":"#ef535099"},{"time":1791808888,"value":748,"color":"#26a69a99"},{"time":1791809193,"value":1412,"color":"#ef535099"},{"time":1791809989,"value":1459,"color":"#26a69a99"},{"time":1791810380,"value":1332,"color":"#26a69a99"},{"time":1791811800,"value":3827,"color":"#ef535099"},{"time":1791811829,"value":1826,"color":"#26a69a99"},{"time":1791811844,"value":886,"color":"#26a69a99"},{"time":1791811877,"value":1030,"color":"#ef535099"},{"time":1791811965,"value":2570,"color":"#ef535099"},{"time":1791812034,"value":1517,"color":"#26a69a99"},{"time":1791812086,"value":1081,"color":"#ef535099"},{"time":1791812133,"value":1074,"color":"#26a69a99"},{"time":1791812450,"value":4969,"color":"#ef535099"},{"time":1791812835,"value":5220,"color":"#ef535099"},{"time":1791812892,"value":1910,"color":"#26a69a99"},{"time":1791812918,"value":444,"color":"#ef535099"},{"time":1791813055,"value":2452,"color":"#26a69a99"},{"time":1791813329,"value":3194,"color":"#26a69a99"},{"time":1791813526,"value":1875,"color":"#ef535099"},{"time":1791813919,"value":4502,"color":"#ef535099"},{"time":1791814035,"value":1724,"color":"#ef535099"},{"time":1791814145,"value":2069,"color":"#ef535099"},{"time":1791814310,"value":2816,"color":"#ef535099"},{"time":1791814525,"value":2596,"color":"#26a69a99"},{"time":1791814826,"value":2970,"color":"#26a69a99"},{"time":1791815058,"value":2426,"color":"#ef535099"},{"time":1791815369,"value":3461,"color":"#26a69a99"},{"time":1791815820,"value":3793,"color":"#ef535099"},{"time":1791816038,"value":2133,"color":"#26a69a99"},{"time":1791816483,"value":3408,"color":"#26a69a99"},{"time":1791817133,"value":4356,"color":"#26a69a99"},{"time":1791818151,"value":6100,"color":"#26a69a99"},{"time":1791818606,"value":2531,"color":"#ef535099"},{"time":1791819446,"value":5349,"color":"#26a69a99"},{"time":1791819881,"value":2474,"color":"#26a69a99"},{"time":1791820207,"value":2335,"color":"#26a69a99"},{"time":1791821148,"value":5405,"color":"#26a69a99"},{"time":1791821464,"value":1875,"color":"#ef535099"},{"time":1791822165,"value":4333,"color":"#ef535099"},{"time":1791822226,"value":955,"color":"#ef535099"},{"time":1791822378,"value":1883,"color":"#ef535099"},{"time":1791822645,"value":2034,"color":"#26a69a99"},{"time":1791823392,"value":3486,"color":"#ef535099"},{"time":1791823809,"value":2236,"color":"#ef535099"},{"time":1791823868,"value":1092,"color":"#ef535099"},{"time":1791824025,"value":1807,"color":"#26a69a99"},{"time":1791824737,"value":5047,"color":"#26a69a99"},{"time":1791825894,"value":4864,"color":"#ef535099"},{"time":1791827184,"value":5373,"color":"#26a69a99"},{"time":1791828043,"value":3051,"color":"#ef535099"},{"time":1791829295,"value":5753,"color":"#ef535099"},{"time":1791831030,"value":7768,"color":"#ef535099"},{"time":1791833451,"value":11447,"color":"#26a69a99"},{"time":1791833696,"value":1353,"color":"#26a69a99"},{"time":1791834602,"value":5705,"color":"#26a69a99"},{"time":1791834870,"value":3246,"color":"#ef535099"},{"time":1791835170,"value":7024,"color":"#26a69a99"}],"upper_band":[{"time":1791756003,"value":7864.1328},{"time":1791756014,"value":7864.5469},{"time":1791756037,"value":7864.9375},{"time":1791756081,"value":7865.3125},{"time":1791756176,"value":7865.6797},{"time":1791756372,"value":7866.25},{"time":1791757280,"value":7866.6172},{"time":1791757994,"value":7867.1719},{"time":1791759140,"value":7867.4922},{"time":1791760232,"value":7867.8359},{"time":1791760847,"value":7868.3359},{"time":1791761350,"value":7869.0078},{"time":1791761619,"value":7869.8594},{"time":1791762469,"value":7870.5078},{"time":1791763680,"value":7871.3047},{"time":1791764105,"value":7871.8984},{"time":1791765198,"value":7872.5312},{"time":1791766208,"value":7873.0234},{"time":1791766852,"value":7873.5},{"time":1791768219,"value":7874.0625},{"time":1791769185,"value":7874.5938},{"time":1791772098,"value":7875.1719},{"time":1791776995,"value":7875.6797},{"time":1791780494,"value":7876.3203},{"time":1791783717,"value":7876.8203},{"time":1791784960,"value":7877.3047},{"time":1791785417,"value":7877.75},{"time":1791788542,"value":7878.3828},{"time":1791790281,"value":7878.9453},{"time":1791790619,"value":7879.5156},{"time":1791790758,"value":7880.1094},{"time":1791792238,"value":7880.5859},{"time":1791792476,"value":7880.8672},{"time":1791792604,"value":7881.2891},{"time":1791794163,"value":7881.7812},{"time":1791794393,"value":7882.0625},{"time":1791794793,"value":7882.1484},{"time":1791795137,"value":7882.0781},{"time":1791796464,"value":7882.1328},{"time":1791797624,"value":7882.0391},{"time":1791798170,"value":7881.9609},{"time":1791799417,"value":7881.8984},{"time":1791799899,"value":7881.5938},{"time":1791800606,"value":7881.2734},{"time":1791801105,"value":7880.7578},{"time":1791801305,"value":7880.4453},{"time":1791802348,"value":7879.9453},{"time":1791802936,"value":7879.4453},{"time":1791803757,"value":7878.9297},{"time":1791805042,"value":7878.5938},{"time":1791805896,"value":7878.2031},{"time":1791806400,"value":7877.7344},{"time":1791807007,"value":7877.3125},{"time":1791807992,"value":7876.7578},{"time":1791808204,"value":7876.0703},{"time":1791808592,"value":7875.2422},{"time":1791808740,"value":7874.4531},{"time":1791808888,"value":7873.8594},{"time":1791809193,"value":7873.3516},{"time":1791809989,"value":7872.8516},{"time":1791810380,"value":7872.5391},{"time":1791811800,"value":7871.9922},{"time":1791811829,"value":7871.4531},{"time":1791811844,"value":7871.1172},{"time":1791811877,"value":7870.6094},{"time":1791811965,"value":7870.1641},{"time":1791812034,"value":7869.8516},{"time":1791812086,"value":7869.5312},{"time":1791812133,"value":7869.3984},{"time":1791812450,"value":7869.2891},{"time":1791812835,"value":7869.0938},{"time":1791812892,"value":7868.9453},{"time":1791812918,"value":7868.7812},{"time":1791813055,"value":7868.5703},{"time":1791813329,"value":7868.5234},{"time":1791813526,"value":7868.2812},{"time":1791813919,"value":7868.0938},{"time":1791814035,"value":7867.7812},{"time":1791814145,"value":7867.4609},{"time":1791814310,"value":7867.1484},{"time":1791814525,"value":7866.875},{"time":1791814826,"value":7866.625},{"time":1791815058,"value":7866.2266},{"time":1791815369,"value":7865.9844},{"time":1791815820,"value":7865.5391},{"time":1791816038,"value":7865.2109},{"time":1791816483,"value":7865.0078},{"time":1791817133,"value":7864.9375},{"time":1791818151,"value":7865.0078},{"time":1791818606,"value":7864.8438},{"time":1791819446,"value":7864.7812},{"time":1791819881,"value":7864.7031},{"time":1791820207,"value":7864.6406},{"time":1791821148,"value":7864.7578},{"time":1791821464,"value":7864.6719},{"time":1791822165,"value":7864.4141},{"time":1791822226,"value":7864.1562},{"time":1791822378,"value":7863.8594},{"time":1791822645,"value":7863.5703},{"time":1791823392,"value":7863.3281},{"time":1791823809,"value":7862.8906},{"time":1791823868,"value":7862.3906},{"time":1791824025,"value":7862.0547},{"time":1791824737,"value":7861.7422},{"time":1791825894,"value":7861.4609},{"time":1791827184,"value":7861.2031},{"time":1791828043,"value":7860.8203},{"time":1791829295,"value":7860.4531},{"time":1791831030,"value":7860.1172},{"time":1791833451,"value":7859.8828},{"time":1791833696,"value":7859.8594},{"time":1791834602,"value":7860.0156},{"time":1791834870,"value":7859.9922},{"time":1791835170,"value":7859.9922}],"lower_band":[{"time":1791756003,"value":7855.8672},{"time":1791756014,"value":7856.2812},{"time":1791756037,"value":7856.6719},{"time":1791756081,"value":7857.0469},{"time":1791756176,"value":7857.4141},{"time":1791756372,"value":7857.9844},{"time":1791757280,"value":7858.3516},{"time":1791757994,"value":7858.9062},{"time":1791759140,"value":7859.2266},{"time":1791760232,"value":7859.5703},{"time":1791760847,"value":7860.0703},{"time":1791761350,"value":7860.7422},{"time":1791761619,"value":7861.5938},{"time":1791762469,"value":7862.2422},{"time":1791763680,"value":7863.0391},{"time":1791764105,"value":7863.6328},{"time":1791765198,"value":7864.2656},{"time":1791766208,"value":7864.7578},{"time":1791766852,"value":7865.2344},{"time":1791768219,"value":7865.7969},{"time":1791769185,"value":7866.3281},{"time":1791772098,"value":7866.9062},{"time":1791776995,"value":7867.4141},{"time":1791780494,"value":7868.0547},{"time":1791783717,"value":7868.5547},{"time":1791784960,"value":7869.0391},{"time":1791785417,"value":7869.4844},{"time":1791788542,"value":7870.1172},{"time":1791790281,"value":7870.6797},{"time":1791790619,"value":7871.25},{"time":1791790758,"value":7871.8438},{"time":1791792238,"value":7872.3203},{"time":1791792476,"value":7872.8672},{"time":1791792604,"value":7873.2891},{"time":1791794163,"value":7873.7812},{"time":1791794393,"value":7874.0625},{"time":1791794793,"value":7874.1484},{"time":1791795137,"value":7874.0781},{"time":1791796464,"value":7874.1328},{"time":1791797624,"value":7874.0391},{"time":1791798170,"value":7873.9609},{"time":1791799417,"value":7873.8984},{"time":1791799899,"value":7873.5938},{"time":1791800606,"value":7873.2734},{"time":1791801105,"value":7872.7578},{"time":1791801305,"value":7872.4453},{"time":1791802348,"value":7871.9453},{"time":1791802936,"value":7871.4453},{"time":1791803757,"value":7870.9297},{"time":1791805042,"value":7870.5938},{"time":1791805896,"value":7870.2031},{"time":1791806400,"value":7869.7344},{"time":1791807007,"value":7869.3125},{"time":1791807992,"value":7868.7578},{"time":1791808204,"value":7868.0703},{"time":1791808592,"value":7867.2422},{"time":1791808740,"value":7866.4531},{"time":1791808888,"value":7865.8594},{"time":1791809193,"value":7865.3516},{"time":1791809989,"value":7864.8516},{"time":1791810380,"value":7864.5391},{"time":1791811800,"value":7863.9922},{"time":1791811829,"value":7863.4531},{"time":1791811844,"value":7863.1172},{"time":1791811877,"value":7862.6094},{"time":1791811965,"value":7862.1641},{"time":1791812034,"value":7861.8516},{"time":1791812086,"value":7861.5312},{"time":1791812133,"value":7861.3984},{"time":1791812450,"value":7861.2891},{"time":1791812835,"value":7861.0938},{"time":1791812892,"value":7860.9453},{"time":1791812918,"value":7860.7812},{"time":1791813055,"value":7860.5703},{"time":1791813329,"value":7860.5234},{"time":1791813526,"value":7860.2812},{"time":1791813919,"value":7860.0938},{"time":1791814035,"value":7859.7812},{"time":1791814145,"value":7859.4609},{"time":1791814310,"value":7859.1484},{"time":1791814525,"value":7858.875},{"time":1791814826,"value":7858.625},{"time":1791815058,"value":7858.2266},{"time":1791815369,"value":7857.9844},{"time":1791815820,"value":7857.5391},{"time":1791816038,"value":7857.2109},{"time":1791816483,"value":7857.0078},{"time":1791817133,"value":7856.9375},{"time":1791818151,"value":7857.0078},{"time":1791818606,"value":7856.8438},{"time":1791819446,"value":7856.7812},{"time":1791819881,"value":7856.7031},{"time":1791820207,"value":7856.6406},{"time":1791821148,"value":7856.7578},{"time":1791821464,"value":7856.6719},{"time":1791822165,"value":7856.4141},{"time":1791822226,"value":7856.1562},{"time":1791822378,"value":7855.8594},{"time":1791822645,"value":7855.5703},{"time":1791823392,"value":7855.3281},{"time":1791823809,"value":7854.8906},{"time":1791823868,"value":7854.3906},{"time":1791824025,"value":7854.0547},{"time":1791824737,"value":7853.7422},{"time":1791825894,"value":7853.4609},{"time":1791827184,"value":7853.2031},{"time":1791828043,"value":7852.8203},{"time":1791829295,"value":7852.4531},{"time":1791831030,"value":7852.1172},{"time":1791833451,"value":7851.8828},{"time":1791833696,"value":7851.8594},{"time":1791834602,"value":7852.0156},{"time":1791834870,"value":7851.9922},{"time":1791835170,"value":7851.9922}],"ema8_data":[{"time":1791756003,"value":7864.4734},{"time":1791756014,"value":7864.5904},{"time":1791756037,"value":7864.0148},{"time":1791756081,"value":7864.2893},{"time":1791756176,"value":7865.2805},{"time":1791756372,"value":7866.6626},{"time":1791757280,"value":7867.1265},{"time":1791757994,"value":7868.2651},{"time":1791759140,"value":7868.3173},{"time":1791760232,"value":7868.969},{"time":1791760847,"value":7870.3648},{"time":1791761350,"value":7872.1726},{"time":1791761619,"value":7874.2454},{"time":1791762469,"value":7875.0242},{"time":1791763680,"value":7876.1855},{"time":1791764105,"value":7876.4776},{"time":1791765198,"value":7877.3715},{"time":1791766208,"value":7877.2334},{"time":1791766852,"value":7877.7371},{"time":1791768219,"value":7877.9066},{"time":1791769185,"value":7878.5385},{"time":1791772098,"value":7879.6966},{"time":1791776995,"value":7880.9862},{"time":1791780494,"value":7882.3226},{"time":1791783717,"value":7882.5287},{"time":1791784960,"value":7882.1334},{"time":1791785417,"value":7880.9371},{"time":1791788542,"value":7880.7844},{"time":1791790281,"value":7879.8323},{"time":1791790619,"value":7879.9251},{"time":1791790758,"value":7880.7196},{"time":1791792238,"value":7880.5597},{"time":1791792476,"value":7880.9353},{"time":1791792604,"value":7880.3941},{"time":1791794163,"value":7879.8065},{"time":1791794393,"value":7878.5717},{"time":1791794793,"value":7877.0002},{"time":1791795137,"value":7875.278},{"time":1791796464,"value":7874.2162},{"time":1791797624,"value":7873.1126},{"time":1791798170,"value":7871.532},{"time":1791799417,"value":7871.0249},{"time":1791799899,"value":7869.7971},{"time":1791800606,"value":7869.4533},{"time":1791801105,"value":7868.4637},{"time":1791801305,"value":7868.3051},{"time":1791802348,"value":7867.404},{"time":1791802936,"value":7866.092},{"time":1791803757,"value":7865.6271},{"time":1791805042,"value":7865.71},{"time":1791805896,"value":7865.9966},{"time":1791806400,"value":7865.4418},{"time":1791807007,"value":7865.8436},{"time":1791807992,"value":7865.8784},{"time":1791808204,"value":7865.3499},{"time":1791808592,"value":7864.2721},{"time":1791808740,"value":7862.8783},{"time":1791808888,"value":7862.6276},{"time":1791809193,"value":7862.1548},{"time":1791809989,"value":7862.6204},{"time":1791810380,"value":7863.4825},{"time":1791811800,"value":7863.3197},{"time":1791811829,"value":7863.9709},{"time":1791811844,"value":7865.144},{"time":1791811877,"value":7865.3343},{"time":1791811965,"value":7865.0933},{"time":1791812034,"value":7865.6837},{"time":1791812086,"value":7865.3095},{"time":1791812133,"value":7865.7407},{"time":1791812450,"value":7865.7428},{"time":1791812835,"value":7865.4111},{"time":1791812892,"value":7865.2086},{"time":1791812918,"value":7864.2178},{"time":1791813055,"value":7863.8361},{"time":1791813329,"value":7863.8725},{"time":1791813526,"value":7863.1231},{"time":1791813919,"value":7862.2068},{"time":1791814035,"value":7861.2164},{"time":1791814145,"value":7859.6128},{"time":1791814310,"value":7857.8099},{"time":1791814525,"value":7857.2411},{"time":1791814826,"value":7857.4097},{"time":1791815058,"value":7856.7076},{"time":1791815369,"value":7856.4948},{"time":1791815820,"value":7855.7181},{"time":1791816038,"value":7855.6697},{"time":1791816483,"value":7855.9653},{"time":1791817133,"value":7856.473},{"time":1791818151,"value":7857.3123},{"time":1791818606,"value":7857.1318},{"time":1791819446,"value":7857.4359},{"time":1791819881,"value":7858.3946},{"time":1791820207,"value":7859.7513},{"time":1791821148,"value":7861.251},{"time":1791821464,"value":7861.7508},{"time":1791822165,"value":7861.584},{"time":1791822226,"value":7860.732},{"time":1791822378,"value":7859.4026},{"time":1791822645,"value":7859.2021},{"time":1791823392,"value":7858.546},{"time":1791823809,"value":7857.3691},{"time":1791823868,"value":7855.676},{"time":1791824025,"value":7855.1924},{"time":1791824737,"value":7855.0386},{"time":1791825894,"value":7854.3078},{"time":1791827184,"value":7854.2949},{"time":1791828043,"value":7853.7294},{"time":1791829295,"value":7852.6229},{"time":1791831030,"value":7851.6511},{"time":1791833451,"value":7851.3398},{"time":1791833696,"value":7851.7643},{"time":1791834602,"value":7852.8166},{"time":1791834870,"value":7853.1907},{"time":1791835170,"value":7854.2595}],"markers":[{"time":1791756003,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791757280,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791760847,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791761350,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791761619,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791762469,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791763680,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791764105,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791765198,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791766208,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791766852,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791768219,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791769185,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791772098,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791776995,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791780494,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791783717,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791784960,"position":"aboveBar","color":"#22c55e","shape":"circle","size":0.5},{"time":1791796464,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791798170,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791799417,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791799899,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791800606,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791801105,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791801305,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791802348,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791802936,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791803757,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791805042,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791805042,"position":"aboveBar","color":"#f43f5e","shape":"circle","text":"!6","size":0.75},{"time":1791805042,"position":"aboveBar","color":"#a78bfa","shape":"square","text":"started","size":0.75},{"time":1791805896,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791806400,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791807007,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791808592,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791808740,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791808888,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791811800,"position":"belowBar","color":"#9598a1","shape":"circle","text":"x","size":0.5},{"time":1791814145,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791814310,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791814310,"position":"belowBar","color":"#f97316","shape":"arrowDown","text":"7851.75","size":1},{"time":1791814525,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791815369,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791816038,"position":"belowBar","color":"#ef4444","shape":"circle","size":0.5},{"time":1791818151,"position":"aboveBar","color":"#f97316","shape":"square","text":"-8.5","size":0.75},{"time":1791819446,"position":"belowBar","color":"#9598a1","shape":"circle","text":"x4","size":0.5},{"time":1791829295,"position":"belowBar","color":"#9598a1","shape":"circle","text":"x","size":0.5},{"time":1791831030,"position":"belowBar","color":"#f97316","shape":"arrowDown","text":"7848.25","size":1},{"time":1791831030,"position":"belowBar","color":"#9598a1","shape":"circle","text":"x2","size":0.5},{"time":1791834602,"position":"aboveBar","color":"#f97316","shape":"square","text":"-12.88","size":0.75}],"trade_lines":[]};
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (url, ...rest) => String(url).startsWith('/api/chart-data')
+    ? Promise.resolve(new Response(JSON.stringify(DATA),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }))
+    : realFetch(url, ...rest);
+  window.EventSource = class { addEventListener() {} close() {} };
+})();
+</script>
+<script>
+// ── Data paths — edit these to match your setup ───────────────────────────
+const BARS_PATH    = '../tmp/keltner_bot_obs/bars_bot1.csv';
+const ACTIONS_PATH = '../tmp/keltner_bot_obs/actions_bot1.csv';
+const KELTNER_PATH = '../keltner_cross.py';
+
+// Minimum price increment for ES. Used to gap the phantom bar's open 1 tick
+// beyond the prior confirmed bar's high/low, matching how the range-bar
+// generator opens a new bar after a breakout close (see computePhantomOpen).
+const TICK_SIZE = 0.25;
+
+// How far above the bar's high (in price points) the upward zone extends.
+const ZONE_PADDING_ABOVE_HIGH = 2.0;
+// How far below the bar's low (in price points) the downward zone extends.
+const ZONE_PADDING_BELOW_LOW = 2.0;
+// How far past the band line itself (upper_band / lower_band) each zone extends.
+const ZONE_PADDING_AT_BAND = 0.2;
+
+// ── Display timezone ────────────────────────────────────────────────────
+// Bar times from the backend are Unix seconds (UTC). All on-screen time
+// display (axis labels, crosshair label, OHLC panel) uses the zone picked
+// from the header's time-zone menu (default Sydney), regardless of the
+// viewer's browser timezone. Daylight saving follows each zone's rules.
+// A change fires a 'displaytzchange' event on window.
+const DISPLAY_ZONES = [
+  // abbrLocale: the locale whose short zone names cover this zone (AEST, EDT, ...).
+  { key: 'sydney', label: 'Sydney', tz: 'Australia/Sydney',    abbrLocale: 'en-AU' },
+  { key: 'pt',     label: 'PT',     tz: 'America/Los_Angeles', abbrLocale: 'en-US' },
+  { key: 'et',     label: 'ET',     tz: 'America/New_York',    abbrLocale: 'en-US' },
+  { key: 'utc',    label: 'UTC',    tz: 'UTC',                 abbrLocale: 'en-US' },
+];
+const DISPLAY_TZ_KEY = 'chart_display_tz';
+let displayZone = DISPLAY_ZONES[0];
+try {
+  displayZone = DISPLAY_ZONES.find(z => z.key === localStorage.getItem(DISPLAY_TZ_KEY)) || displayZone;
+} catch (e) { /* localStorage unavailable — keep the default */ }
+
+const pad2 = n => String(n).padStart(2, '0');
+const tzPartFormatters = {};
+function tzParts(unixSeconds, tz) {
+  const f = tzPartFormatters[tz] || (tzPartFormatters[tz] = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', second: 'numeric',
+  }));
+  const p = {};
+  for (const { type, value } of f.formatToParts(new Date(unixSeconds * 1000))) p[type] = +value;
+  return p;
+}
+// A Date whose getUTC*() fields read as the wall-clock time in the display zone.
+function toDisplayDate(unixSeconds) {
+  const p = tzParts(unixSeconds, displayZone.tz);
+  return new Date(Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second));
+}
+// Short zone name at that moment, e.g. AEST / AEDT, PDT, EST, UTC.
+function displayZoneAbbrev(unixSeconds) {
+  if (displayZone.tz === 'UTC') return 'UTC';
+  const part = new Intl.DateTimeFormat(displayZone.abbrLocale, { timeZone: displayZone.tz, timeZoneName: 'short' })
+    .formatToParts(new Date(unixSeconds * 1000)).find(x => x.type === 'timeZoneName');
+  return part ? part.value : displayZone.label;
+}
+function utcOffsetTickFormatter(time, tickMarkType, locale) {
+  const d = toDisplayDate(time);
+  switch (tickMarkType) {
+    case LightweightCharts.TickMarkType.Year:
+      return `${d.getUTCFullYear()}`;
+    case LightweightCharts.TickMarkType.Month:
+      return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}`;
+    case LightweightCharts.TickMarkType.DayOfMonth:
+      return `${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}`;
+    case LightweightCharts.TickMarkType.TimeWithSeconds:
+      return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+    case LightweightCharts.TickMarkType.Time:
+    default:
+      return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}`;
+  }
+}
+function utcOffsetCrosshairTimeFormatter(time) {
+  const d = toDisplayDate(time);
+  return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+}
+
+// ── Price chart ───────────────────────────────────────────────────────────
+const priceChart = LightweightCharts.createChart(document.getElementById('price-chart'), {
+  layout:    { background: { color: '#131722' }, textColor: '#9598a1' },
+  grid:      { vertLines: { color: '#2a2e39' }, horzLines: { color: '#2a2e39' } },
+  crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+  rightPriceScale: { borderColor: '#2a2e39' },
+  timeScale: { borderColor: '#2a2e39', timeVisible: true, secondsVisible: true, tickMarkFormatter: utcOffsetTickFormatter },
+  localization: { timeFormatter: utcOffsetCrosshairTimeFormatter },
+  handleScroll: { horzTouchDrag: true, vertTouchDrag: false },
+  handleScale:  { pinch: true, mouseWheel: true, axisPressedMouseMove: true },
+  kineticScroll: { touch: true, mouse: false },
+});
+
+// ── BackgroundZonePrimitive ─────────────────────────────────────────────
+// Draws solid-to-transparent background rectangles directly on the canvas,
+// one per bar, anchored to a price boundary (upper/lower band) and fading
+// toward the top or bottom of the pane. This bypasses AreaSeries entirely —
+// no whitespace-vs-null ambiguity, no pane- vs region-relative gradients,
+// no diagonal line interpolation between bars. Each bar is drawn (or not)
+// independently, so a zone appears/disappears on exactly the bar the
+// condition is true/false for.
+class BackgroundZonePrimitive {
+  constructor() {
+    this._zones = []; // [{ time, price, direction: 'up' | 'down', color }]
+    this._paneViews = [new BackgroundZonePaneView(this)];
+    this._chart = undefined;
+    this._series = undefined;
+    this._requestUpdate = undefined;
+  }
+  attached({ chart, series, requestUpdate }) {
+    this._chart = chart;
+    this._series = series;
+    this._requestUpdate = requestUpdate;
+  }
+  detached() {
+    this._chart = undefined;
+    this._series = undefined;
+  }
+  updateAllViews() {
+    this._paneViews.forEach(pv => pv.update());
+  }
+  paneViews() {
+    return this._paneViews;
+  }
+  setZones(zones) {
+    this._zones = zones;
+    if (this._requestUpdate) this._requestUpdate();
+  }
+  get chart()  { return this._chart; }
+  get series() { return this._series; }
+  get zones()  { return this._zones; }
+}
+
+class BackgroundZonePaneView {
+  constructor(source) { this._source = source; }
+  update() {} // renderer reads live state from the source each draw, nothing to cache
+  renderer() { return new BackgroundZoneRenderer(this._source); }
+  zOrder() { return 'bottom'; } // draw beneath the grid/bars
+}
+
+class BackgroundZoneRenderer {
+  constructor(source) { this._source = source; }
+  draw(target) {
+    const chart  = this._source.chart;
+    const series = this._source.series;
+    const zones  = this._source.zones;
+    if (!chart || !series || !zones.length) return;
+
+    const timeScale = chart.timeScale();
+    const barSpacingMedia = timeScale.options().barSpacing;
+
+    target.useBitmapCoordinateSpace(scope => {
+      const ctx = scope.context;
+      const hRatio = scope.horizontalPixelRatio;
+      const vRatio = scope.verticalPixelRatio;
+      const paneTop = 0;
+      const paneBottom = scope.bitmapSize.height;
+      const halfBar = (barSpacingMedia / 2) * hRatio;
+
+      ctx.save();
+      try {
+        for (const zone of zones) {
+          const xCenterMedia = timeScale.timeToCoordinate(zone.time);
+          if (xCenterMedia === null) continue;
+
+          const xCenter = xCenterMedia * hRatio;
+          const xLeft = xCenter - halfBar;
+          const xRight = xCenter + halfBar;
+
+          if (zone.direction === 'full') {
+            ctx.fillStyle = zone.color;
+            ctx.fillRect(xLeft, paneTop, xRight - xLeft, paneBottom - paneTop);
+            continue;
+          }
+
+          const yPriceMedia = series.priceToCoordinate(zone.price);
+          if (yPriceMedia === null) continue;
+          const yPrice = yPriceMedia * vRatio;
+
+          let yTop, yBottom;
+          if (zone.direction === 'up') {
+            yBottom = yPrice;
+            yTop = paneTop;
+            if (zone.boundaryPrice !== undefined) {
+              const yBoundaryMedia = series.priceToCoordinate(zone.boundaryPrice);
+              if (yBoundaryMedia !== null) yTop = yBoundaryMedia * vRatio;
+            }
+          } else {
+            yTop = yPrice;
+            yBottom = paneBottom;
+            if (zone.boundaryPrice !== undefined) {
+              const yBoundaryMedia = series.priceToCoordinate(zone.boundaryPrice);
+              if (yBoundaryMedia !== null) yBottom = yBoundaryMedia * vRatio;
+            }
+          }
+          if (yBottom <= yTop) continue;
+
+          const gradient = ctx.createLinearGradient(0, yTop, 0, yBottom);
+          if (zone.direction === 'up') {
+            gradient.addColorStop(0, 'transparent'); // pane top: fade out
+            gradient.addColorStop(1, zone.color);     // at the line: solid
+          } else {
+            gradient.addColorStop(0, zone.color);      // at the line: solid
+            gradient.addColorStop(1, 'transparent');   // pane bottom: fade out
+          }
+          ctx.fillStyle = gradient;
+          ctx.fillRect(xLeft, yTop, xRight - xLeft, yBottom - yTop);
+        }
+      } finally {
+        ctx.restore();
+      }
+    });
+  }
+}
+
+// ── ETH / RTH session background ────────────────────────────────────────
+// RTH = 9:30 AM–4:00 PM US Eastern. Determined from each bar's actual
+// Eastern wall-clock time (not a fixed UTC offset), so it stays correct
+// across DST regardless of the display time zone picked in the header.
+const RTH_TIMEZONE = 'America/New_York';
+const RTH_START_MIN = 9 * 60 + 30; // 9:30
+const RTH_END_MIN = 16 * 60;       // 16:00
+const ETH_BACKGROUND_COLOR = 'rgba(255,255,255,0.04)'; // subtle, solid — not faded
+// Same violet used for intrabar_watch markers elsewhere in this app — reusing
+// it here keeps "in progress / not yet confirmed" a consistent color across
+// the chart instead of introducing a second unrelated meaning for a new hue.
+const PHANTOM_BAR_COLOR = '#a78bfa';
+const rthFormatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: RTH_TIMEZONE, hour: '2-digit', minute: '2-digit', hour12: false,
+});
+function isRTH(unixSeconds) {
+  const parts = rthFormatter.formatToParts(new Date(unixSeconds * 1000));
+  const hour = parseInt(parts.find(p => p.type === 'hour').value, 10) % 24;
+  const minute = parseInt(parts.find(p => p.type === 'minute').value, 10);
+  const minutesSinceMidnight = hour * 60 + minute;
+  return minutesSinceMidnight >= RTH_START_MIN && minutesSinceMidnight < RTH_END_MIN;
+}
+
+const ubSeries = priceChart.addLineSeries({
+  color: '#facc15', lineWidth: 1,
+  priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
+});
+const lbSeries = priceChart.addLineSeries({
+  color: '#f97316', lineWidth: 1,
+  priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
+});
+const emaSeries = priceChart.addLineSeries({
+  color: '#2563EB', lineWidth: 1,
+  priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false,
+});
+
+const barSeries = priceChart.addBarSeries({
+  upColor: '#60A5FA', downColor: '#60A5FA', openVisible: true,
+});
+
+// Dedicated series for the forming (unconfirmed) bar — kept separate from
+// barSeries on purpose. barSeries.update() can only append-or-replace the
+// series' own *last* point; once a real bar closes at its own true
+// timestamp (later than the phantom's synthetic slot), that update would
+// just append a new point alongside the stale phantom instead of removing
+// it, leaving a permanent ghost candle. Since a series holding zero points
+// contributes nothing to the chart's shared time axis, clearing this
+// series with setData([]) makes the old phantom's column disappear
+// entirely — not just blank out its values — with no leftover artifact
+// and no gap column.
+const phantomSeries = priceChart.addBarSeries({
+  upColor: PHANTOM_BAR_COLOR, downColor: PHANTOM_BAR_COLOR, openVisible: true,
+  lastValueVisible: false, priceLineVisible: false,
+});
+
+const zonePrimitive = new BackgroundZonePrimitive();
+barSeries.attachPrimitive(zonePrimitive);
+
+// ── Live tick price line ─────────────────────────────────────────────────
+// Independent of the bar data's own (built-in) last-value line: this one
+// tracks raw ticks streamed from /api/last-tick-stream via SSE, so it can
+// move between bar closes instead of jumping only when a bar finalizes.
+// Starts hidden (price 0, not visible) until the first tick arrives.
+const liveTickLine = barSeries.createPriceLine({
+  price: 0,
+  color: '#a78bfa',
+  lineWidth: 1,
+  lineStyle: LightweightCharts.LineStyle.Dashed,
+  axisLabelVisible: false,
+  title: 'live',
+});
+let liveTickLineShown = false;
+
+// ── Phantom bar (Tier 1: approximate) ───────────────────────────────────
+// Renders the range bar currently forming, using only last_tick() — i.e.
+// open (last confirmed bar's close) vs. current price, with high/low
+// accumulated as a running max/min across every tick this browser tab has
+// actually observed since the bar opened (reset when the next real bar
+// closes). That keeps the stem from contracting as price pulls back toward
+// open — but it still can't see ticks that happened before this tab
+// connected, or any excursion that occurred between two SSE polls faster
+// than the poll interval. A faithful version needs the bot to expose its
+// own running high/low for the in-progress bar — not available yet, see
+// chat history for Tier 2.
+let lastConfirmedBar = null;   // { time, open, high, low, close, volume } of latest real bar
+let phantomBarTime   = null;   // synthetic time slot the phantom bar occupies until the next real bar replaces it
+let lastTickPrice    = null;   // most recent price from the tick stream, so a fresh loadChartData() can redraw the phantom immediately instead of waiting for the next tick
+let phantomHigh       = null;  // running max of every tick actually observed since the phantom bar opened
+let phantomLow        = null;  // running min, same idea — these only ever widen (reset happens on the next real bar), so the stem no longer contracts as price pulls back toward open
+
+// A range bar can only close when price has traveled the full range from
+// its origin — so by construction its close price IS the high (upside
+// breakout close) or IS the low (downside breakout close). The next bar
+// opens 1 tick beyond whichever extreme was just hit, since price has
+// already traded through that level.
+function computePhantomOpen(bar) {
+  if (bar.close >= bar.high) return +(bar.high + TICK_SIZE).toFixed(2);
+  if (bar.close <= bar.low)  return +(bar.low  - TICK_SIZE).toFixed(2);
+  return bar.close; // shouldn't happen for a true range bar; fallback just in case
+}
+
+function updatePhantomBar(price) {
+  if (!lastConfirmedBar || phantomBarTime == null || price == null) return;
+  const open = computePhantomOpen(lastConfirmedBar);
+  // Seed high/low with `open` too, not just the live price — open can sit
+  // outside [phantomLow, phantomHigh] now that it's gapped beyond the prior
+  // bar's extreme, and leaving it out would let a bar's open print above its
+  // own high (or below its own low) on the very first tick.
+  phantomHigh = Math.max(phantomHigh, price, open);
+  phantomLow  = Math.min(phantomLow, price, open);
+  phantomSeries.update({ time: phantomBarTime, open, high: phantomHigh, low: phantomLow, close: price });
+}
+
+// Removes the forming-bar placeholder entirely (not just blanking its
+// values) so it never lingers as a stray candle once the real bar that
+// replaces it has been drawn. Safe to call even when there's nothing to
+// clear (e.g. the very first load).
+function clearPhantomBar() {
+  phantomSeries.setData([]);
+}
+
+// ── Auto-scroll on new bar ──────────────────────────────────────────────
+// When a bar closes, nudge the visible window left by however many columns
+// were just added (normally 1: the new real bar, with the phantom re-seeded
+// one slot further right). Net effect: every bar on screen slides left by
+// exactly one bar width, the newest bars stay at the same screen position,
+// and your zoom level is untouched.
+//
+// AUTO_SCROLL_ONLY_AT_LIVE_EDGE: when true, the nudge only happens while the
+// most recent bar is on screen — if you've panned back to study history,
+// the view stays put instead of drifting. Set false to always nudge.
+const AUTO_SCROLL_ON_NEW_BAR        = true;
+const AUTO_SCROLL_ONLY_AT_LIVE_EDGE = true;
+
+// Total columns on the shared time axis. The line series share the bar
+// series' timestamps, so the only extra column is the phantom bar's slot.
+function timeAxisColumnCount() {
+  return barSeries.data().length + phantomSeries.data().length;
+}
+
+// Snapshot the view *before* touching any series, so the library's own
+// right-edge handling during update()/setData() can't skew the result.
+function captureScrollState() {
+  if (!AUTO_SCROLL_ON_NEW_BAR) return null;
+  const range = priceChart.timeScale().getVisibleLogicalRange();
+  if (!range) return null;
+  const columns = timeAxisColumnCount();
+  const atLiveEdge = range.to >= columns - 1; // latest column visible
+  if (AUTO_SCROLL_ONLY_AT_LIVE_EDGE && !atLiveEdge) return null;
+  return { range, columns };
+}
+
+// Re-apply the pre-update window shifted by the number of columns added.
+// setVisibleLogicalRange on priceChart propagates to volChart through the
+// existing logical-range sync subscription.
+function applyScrollShift(state) {
+  if (!state) return;
+  const added = timeAxisColumnCount() - state.columns;
+  if (added <= 0) return;
+  priceChart.timeScale().setVisibleLogicalRange({
+    from: state.range.from + added,
+    to:   state.range.to   + added,
+  });
+}
+
+// ── Volume chart ──────────────────────────────────────────────────────────
+const volChart = LightweightCharts.createChart(document.getElementById('volume-chart'), {
+  layout:    { background: { color: '#131722' }, textColor: '#9598a1' },
+  grid:      { vertLines: { color: '#2a2e39' }, horzLines: { color: '#2a2e39' } },
+  crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+  rightPriceScale: { borderColor: '#2a2e39' },
+  timeScale: { borderColor: '#2a2e39', visible: false },
+  handleScroll: { horzTouchDrag: true, vertTouchDrag: false },
+  handleScale:  { pinch: true, mouseWheel: true, axisPressedMouseMove: true },
+  kineticScroll: { touch: true, mouse: false },
+});
+const volSeries = volChart.addHistogramSeries({
+  color: '#60A5FA',
+  priceFormat: { type: 'volume' }, priceScaleId: '',
+});
+volChart.priceScale('').applyOptions({ scaleMargins: { top: 0.1, bottom: 0 } });
+
+// ── Sync scroll/crosshair ─────────────────────────────────────────────────
+priceChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+  if (range) volChart.timeScale().setVisibleLogicalRange(range);
+});
+volChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+  if (range) priceChart.timeScale().setVisibleLogicalRange(range);
+});
+
+// ── Persist viewport (visible time range) across reloads ───────────────────
+// Time-based rather than logical/index-based: bar count can change between
+// loads (new bars appended), which would make a saved logical range point at
+// the wrong slice of data. A time window stays meaningful regardless.
+const VIEWPORT_KEY = 'esu6_chart_viewport';
+let viewportSaveTimer = null;
+
+function saveViewport(range) {
+  if (!range) return;
+  clearTimeout(viewportSaveTimer);
+  viewportSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(VIEWPORT_KEY, JSON.stringify({ from: range.from, to: range.to }));
+    } catch (e) {
+      // localStorage unavailable (private mode, quota, etc.) — fail silently
+    }
+  }, 300);
+}
+
+priceChart.timeScale().subscribeVisibleTimeRangeChange(saveViewport);
+
+function restoreViewport() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(VIEWPORT_KEY));
+  } catch (e) {
+    saved = null;
+  }
+  if (saved && saved.from != null && saved.to != null) {
+    try {
+      priceChart.timeScale().setVisibleRange(saved);
+      return true;
+    } catch (e) {
+      // Saved range doesn't fall within the freshly loaded data — fall back below
+    }
+  }
+  return false;
+}
+
+// ── Open on the most recent bar ───────────────────────────────────────────
+// On page load, anchor the right edge of the view to the newest bar (plus
+// the phantom slot) instead of wherever the view was last left. The zoom
+// level (number of bars across the screen) is still taken from the saved
+// viewport if there is one; otherwise DEFAULT_VISIBLE_BARS is used.
+const DEFAULT_VISIBLE_BARS = 120;
+const RIGHT_MARGIN_BARS    = 3;   // empty space to the right of the newest bar
+
+function showLatestBars() {
+  const columns = timeAxisColumnCount();
+  if (!columns) return;
+  let span = DEFAULT_VISIBLE_BARS;
+  if (restoreViewport()) {
+    const r = priceChart.timeScale().getVisibleLogicalRange();
+    if (r && r.to > r.from) span = r.to - r.from;
+  }
+  const to = columns - 1 + RIGHT_MARGIN_BARS;
+  priceChart.timeScale().setVisibleLogicalRange({ from: to - span, to });
+}
+
+priceChart.subscribeCrosshairMove(param => {
+  if (param.time) volChart.setCrosshairPosition(0, param.time, volSeries);
+  else volChart.clearCrosshairPosition();
+});
+
+// ── OHLC hover display ────────────────────────────────────────────────────
+let ubMap = {}, lbMap = {}, emaMap = {}, volMap = {};
+// Running client-side copies of everything that lightweight-charts can only
+// accept as a full array (setMarkers/setZones have no incremental variant).
+// Appending to these and re-calling setMarkers/setZones is still cheap and
+// network-free — the expensive part we're avoiding is the /api/chart-data
+// round trip and the setData() calls on the price/vol/line series.
+let allMarkers = [];
+let zones = [];
+
+// ── Zone colours ─────────────────────────────────────────────────────────
+// Every EMA-beyond-band zone gets a light (translucent) tint by default:
+// light yellow above the upper band, light orange below the lower band.
+// If the same bar also carries an XC std-dev circle marker, the zone is
+// recoloured at full strength:
+//   green circle (xc_positive > +1 SD) → yellow
+//   red circle   (xc_positive < -1 SD) → orange
+// The circle colours must match XC_UP_COLOR / XC_DN_COLOR in
+// chart_markers.py (and the inline copy in app.py's build_chart_data).
+const ZONE_LIGHT_UP_COLOR = 'rgba(250,204,21,0.35)'; // light yellow (#facc15 at 35%)
+const ZONE_LIGHT_DN_COLOR = 'rgba(249,115,22,0.35)'; // light orange (#f97316 at 35%)
+const ZONE_XC_UP_COLOR   = '#facc15'; // yellow
+const ZONE_XC_DN_COLOR   = '#f97316'; // orange
+const XC_UP_MARKER_COLOR = '#22c55e';
+const XC_DN_MARKER_COLOR = '#ef4444';
+
+// time -> 'up' | 'down' for bars that carry an XC circle marker. Matched on
+// shape + colour so entry arrows, exit squares and violet intrabar_watch
+// circles on the same bar are ignored.
+function xcMarkerDirection(marker) {
+  if (!marker || marker.shape !== 'circle') return null;
+  const c = String(marker.color || '').toLowerCase();
+  if (c === XC_UP_MARKER_COLOR) return 'up';
+  if (c === XC_DN_MARKER_COLOR) return 'down';
+  return null;
+}
+function buildXcMap(markers) {
+  const map = {};
+  for (const m of markers || []) {
+    const dir = xcMarkerDirection(m);
+    if (dir) map[m.time] = dir;
+  }
+  return map;
+}
+let xcMap = {};
+
+function zoneColorFor(time, direction) {
+  const xc = xcMap[time];
+  if (xc === 'up')   return ZONE_XC_UP_COLOR;
+  if (xc === 'down') return ZONE_XC_DN_COLOR;
+  return direction === 'up' ? ZONE_LIGHT_UP_COLOR : ZONE_LIGHT_DN_COLOR;
+}
+
+// Same zone rules used by the full loadChartData() pass below, factored out
+// so a single incoming bar (applyNewBar) can compute its own zone entries
+// without re-deriving them for the whole series. Reads xcMap, so xcMap must
+// be up to date for this bar before calling.
+function zoneEntriesForBar(bar, emaVal, ubVal, lbVal) {
+  const entries = [];
+  if (!isRTH(bar.time)) {
+    entries.push({ time: bar.time, direction: 'full', color: ETH_BACKGROUND_COLOR });
+  }
+  if (emaVal !== undefined && lbVal !== undefined && emaVal < lbVal) {
+    const boundaryPrice = bar.low - ZONE_PADDING_BELOW_LOW;
+    entries.push({ time: bar.time, price: lbVal - ZONE_PADDING_AT_BAND, boundaryPrice, direction: 'down', color: zoneColorFor(bar.time, 'down') });
+  }
+  if (emaVal !== undefined && ubVal !== undefined && emaVal > ubVal) {
+    const boundaryPrice = bar.high + ZONE_PADDING_ABOVE_HIGH;
+    entries.push({ time: bar.time, price: ubVal + ZONE_PADDING_AT_BAND, boundaryPrice, direction: 'up', color: zoneColorFor(bar.time, 'up') });
+  }
+  return entries;
+}
+
+// ── Time-zone menu ──────────────────────────────────────────────────────
+const tzBtn  = document.getElementById('tz-btn');
+const tzMenu = document.getElementById('tz-menu');
+let lastCrosshairTime = null;
+function renderTzMenu() {
+  tzBtn.innerHTML = `${displayZone.label} &#9662;`;
+  tzMenu.innerHTML = DISPLAY_ZONES.map(z =>
+    `<li role="option" tabindex="-1" data-key="${z.key}" aria-selected="${z === displayZone}">` +
+    `<span class="tick">${z === displayZone ? '&#10003;' : ''}</span>${z.label}` +
+    `<span class="zone">${z.tz}</span></li>`
+  ).join('');
+}
+function setTzMenuOpen(open) {
+  tzMenu.classList.toggle('open', open);
+  tzBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (!open) return;
+  // Open leftward from the button if it would run off the right edge (phones).
+  tzMenu.style.left = ''; tzMenu.style.right = '';
+  if (tzMenu.getBoundingClientRect().right > window.innerWidth - 4) {
+    tzMenu.style.left = 'auto'; tzMenu.style.right = '0';
+  }
+  (tzMenu.querySelector('[aria-selected="true"]') || tzMenu.firstElementChild).focus();
+}
+function setDisplayZone(key) {
+  const z = DISPLAY_ZONES.find(z => z.key === key);
+  if (!z) return;
+  displayZone = z;
+  try { localStorage.setItem(DISPLAY_TZ_KEY, z.key); } catch (e) { /* ignore */ }
+  renderTzMenu();
+  // New function objects so the chart re-labels its axis and crosshair.
+  priceChart.applyOptions({
+    timeScale:    { tickMarkFormatter: (...a) => utcOffsetTickFormatter(...a) },
+    localization: { timeFormatter: t => utcOffsetCrosshairTimeFormatter(t) },
+  });
+  if (lastCrosshairTime) document.getElementById('d-time').textContent = fmtTime(lastCrosshairTime);
+  window.dispatchEvent(new CustomEvent('displaytzchange', { detail: z }));
+}
+tzBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  setTzMenuOpen(!tzMenu.classList.contains('open'));
+});
+tzMenu.addEventListener('click', e => {
+  const li = e.target.closest('li');
+  if (!li) return;
+  setDisplayZone(li.dataset.key);
+  setTzMenuOpen(false);
+  tzBtn.focus();
+});
+tzMenu.addEventListener('keydown', e => {
+  const items = [...tzMenu.children];
+  const i = items.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (i >= 0) items[i].click(); }
+  else if (e.key === 'Escape') { setTzMenuOpen(false); tzBtn.focus(); }
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#tz-wrap')) setTzMenuOpen(false);
+});
+renderTzMenu();
+
+function fmt(v)     { return (v !== undefined && v !== null) ? Number(v).toFixed(2) : '-'; }
+function fmtTime(t) {
+  if (!t) return '';
+  const d = toDisplayDate(t);
+  return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())} ${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())} ${displayZoneAbbrev(t)}`;
+}
+
+priceChart.subscribeCrosshairMove(param => {
+  const bar = param.seriesData.get(barSeries);
+  if (bar && param.time) {
+    document.getElementById('d-open').textContent  = fmt(bar.open);
+    document.getElementById('d-high').textContent  = fmt(bar.high);
+    document.getElementById('d-low').textContent   = fmt(bar.low);
+    document.getElementById('d-close').textContent = fmt(bar.close);
+    document.getElementById('d-ema').textContent   = fmt(emaMap[param.time]);
+    document.getElementById('d-ub').textContent    = fmt(ubMap[param.time]);
+    document.getElementById('d-lb').textContent    = fmt(lbMap[param.time]);
+    document.getElementById('d-vol').textContent   = volMap[param.time] ? volMap[param.time].toLocaleString() : '-';
+    document.getElementById('d-time').textContent  = fmtTime(param.time);
+    lastCrosshairTime = param.time;
+  }
+});
+
+// ── Resize ────────────────────────────────────────────────────────────────
+// On short viewports (e.g. a phone in landscape, or a small phone with the
+// on-screen keyboard/URL bar eating vertical space), a fixed 78/22 split can
+// leave the volume pane too thin to read, or squeeze the price pane below a
+// usable size. Scale the volume share down — and drop it entirely below a
+// hard floor — as total height shrinks.
+const volumeEl = document.getElementById('volume-chart');
+
+// User-driven show/hide, independent of (and overriding) the viewport-based
+// auto-hide above. Persisted so the choice survives a reload.
+const VOL_HIDDEN_KEY = 'esu6_vol_hidden';
+let volHiddenByUser = true;
+try {
+  const saved = localStorage.getItem(VOL_HIDDEN_KEY);
+  if (saved !== null) volHiddenByUser = saved === '1';
+} catch (e) {
+  // localStorage unavailable — default to hidden
+}
+
+const volToggleBtn = document.getElementById('vol-toggle-btn');
+function updateVolToggleBtn() {
+  volToggleBtn.classList.toggle('active', !volHiddenByUser);
+}
+volToggleBtn.addEventListener('click', () => {
+  volHiddenByUser = !volHiddenByUser;
+  try {
+    localStorage.setItem(VOL_HIDDEN_KEY, volHiddenByUser ? '1' : '0');
+  } catch (e) {
+    // ignore
+  }
+  updateVolToggleBtn();
+  resize();
+});
+updateVolToggleBtn();
+
+// ---------------------------------------------------------------------------
+// New-bar sounds
+// ---------------------------------------------------------------------------
+// Browsers block audio until the page has had a click/tap/keypress, so the
+// AudioContext is created (or resumed) on the first interaction. Until then
+// playBarSound() is a silent no-op. Clicking the Sound button also counts.
+//
+// Sounds (generated with Web Audio, no files needed):
+//   - every confirmed bar: short soft tick
+//   - bar carrying a buy marker: higher, longer two-note rise
+//   - bar carrying a sell marker: lower, longer two-note fall
+// Plain ticks are throttled so fast 16-tick bars don't pile up; trigger
+// sounds are never throttled.
+const SOUND_MUTED_KEY    = 'chart_sound_muted';
+const BAR_SOUND_MIN_GAP  = 150; // ms between plain bar ticks
+let soundMuted = false;
+try { soundMuted = localStorage.getItem(SOUND_MUTED_KEY) === '1'; } catch (e) { /* ignore */ }
+
+let audioCtx = null;
+let lastBarSoundAt = 0;
+
+function unlockAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch (e) {
+    console.warn('Audio unavailable:', e);
+  }
+}
+['click', 'touchstart', 'keydown'].forEach(ev =>
+  document.addEventListener(ev, unlockAudio, { once: true, capture: true }));
+
+function beep(freq, duration, startOffset = 0, volume = 0.15) {
+  const t0   = audioCtx.currentTime + startOffset;
+  const osc  = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(volume, t0);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t0);
+  osc.stop(t0 + duration);
+}
+
+// Works out whether a marker is a buy or sell trigger. Accepts the usual
+// lightweight-charts marker fields (text / shape / position); anything it
+// can't classify (e.g. intrabar_watch markers) returns null.
+function markerDirection(marker) {
+  if (!marker) return null;
+  const text = String(marker.text || '').trim().toUpperCase();
+  if (text.startsWith('B')) return 'buy';
+  if (text.startsWith('S')) return 'sell';
+  if (marker.shape === 'arrowUp')   return 'buy';
+  if (marker.shape === 'arrowDown') return 'sell';
+  return null;
+}
+
+function playBarSound(marker) {
+  if (soundMuted || !audioCtx || audioCtx.state !== 'running') return;
+  const dir = markerDirection(marker);
+  if (dir === 'buy')  { beep(880, 0.15, 0, 0.2);  beep(1320, 0.25, 0.12, 0.2); return; }
+  if (dir === 'sell') { beep(660, 0.15, 0, 0.2);  beep(440,  0.25, 0.12, 0.2); return; }
+  const now = performance.now();
+  if (now - lastBarSoundAt < BAR_SOUND_MIN_GAP) return;
+  lastBarSoundAt = now;
+  beep(880, 0.06, 0, 0.1);
+}
+
+const soundToggleBtn = document.getElementById('sound-toggle-btn');
+function updateSoundToggleBtn() {
+  soundToggleBtn.classList.toggle('active', !soundMuted);
+  soundToggleBtn.textContent = soundMuted ? 'Muted' : 'Sound';
+}
+soundToggleBtn.addEventListener('click', () => {
+  soundMuted = !soundMuted;
+  try { localStorage.setItem(SOUND_MUTED_KEY, soundMuted ? '1' : '0'); } catch (e) { /* ignore */ }
+  updateSoundToggleBtn();
+  unlockAudio();
+  if (!soundMuted && audioCtx) beep(880, 0.06, 0, 0.1); // confirm it's working
+});
+updateSoundToggleBtn();
+
+function resize() {
+  const total = document.getElementById('chart-container').clientHeight;
+
+  let volShare;
+  if (total < 260) {
+    volShare = 0;               // too short to show both panes usefully
+  } else if (total < 420) {
+    volShare = 0.14;            // short viewport: keep volume as a thin strip
+  } else {
+    volShare = 0.22;            // normal desktop/tablet split
+  }
+
+  const showVol = volShare > 0 && !volHiddenByUser;
+  volumeEl.style.display = showVol ? '' : 'none';
+
+  const vh = showVol ? Math.floor(total * volShare) : 0;
+  const ph = total - vh - (showVol ? 1 : 0); // -1px for the border-top on volume pane
+
+  document.getElementById('price-chart').style.height = ph + 'px';
+  volumeEl.style.height = vh + 'px';
+  priceChart.applyOptions({ width: document.getElementById('price-chart').clientWidth, height: ph });
+  if (showVol) {
+    volChart.applyOptions({ width: volumeEl.clientWidth, height: vh });
+  }
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 100));
+resize();
+
+// ── Load data from Flask API ──────────────────────────────────────────────
+async function loadChartData(scrollState = null) {
+  const overlay    = document.getElementById('overlay');
+  const overlayMsg = document.getElementById('overlay-msg');
+  const overlayErr = document.getElementById('overlay-err');
+  const spinner    = document.getElementById('spinner');
+
+  const params = new URLSearchParams({
+    bars:    BARS_PATH,
+    actions: ACTIONS_PATH,
+    keltner: KELTNER_PATH,
+  });
+
+  try {
+    const res  = await fetch('/api/chart-data?' + params);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'HTTP ' + res.status);
+    }
+
+    const { bars, volume, upper_band, lower_band, ema8_data, markers, trade_lines } = data;
+
+    // Lookup maps for crosshair display
+    ubMap  = Object.fromEntries(upper_band.map(d => [d.time, d.value]));
+    lbMap  = Object.fromEntries(lower_band.map(d => [d.time, d.value]));
+    emaMap = Object.fromEntries(ema8_data.map(d  => [d.time, d.value]));
+    volMap = Object.fromEntries(volume.map(d     => [d.time, d.value]));
+
+    // ── Background zones (EMA vs Keltner bands) ────────────────────────────
+    // Each bar is evaluated independently: a zone exists only for the exact
+    // bar where the condition holds, so it appears/disappears on that bar
+    // with no persistence into neighboring bars. Uses the same per-bar rule
+    // (zoneEntriesForBar) that applyNewBar() uses for incremental updates,
+    // so a full reload and an incremental append can never disagree.
+    xcMap = buildXcMap(markers);  // must precede zone build (zone colour depends on it)
+    zones = bars.flatMap(b => zoneEntriesForBar(b, emaMap[b.time], ubMap[b.time], lbMap[b.time]));
+    zonePrimitive.setZones(zones);
+
+    // Populate all series
+    ubSeries.setData(upper_band);
+    lbSeries.setData(lower_band);
+    emaSeries.setData(ema8_data);
+    barSeries.setData(bars);
+    // XC circles are hidden: they only colour the zones (via xcMap above).
+    allMarkers = markers.filter(m => !xcMarkerDirection(m));
+    barSeries.setMarkers(allMarkers);
+    // Per-point `color` on HistogramData overrides the series' own `color` option,
+    // so strip it here to force the flat volSeries color from above to apply.
+    volSeries.setData(volume.map(d => ({ time: d.time, value: d.value })));
+
+    // barSeries.setData() above only replaces barSeries's own points — the
+    // phantom lives on its own separate series now (see phantomSeries above)
+    // specifically so it doesn't get silently duplicated or left stranded
+    // here. Clear it explicitly, then re-establish the phantom slot for
+    // whatever bar is forming next and redraw it immediately if we already
+    // have a price (don't wait for the next tick — ticks can be seconds apart).
+    clearPhantomBar();
+    lastConfirmedBar = bars.length ? bars[bars.length - 1] : null;
+    phantomBarTime    = lastConfirmedBar ? lastConfirmedBar.time + 1 : null;
+    const seedOpen    = lastConfirmedBar ? computePhantomOpen(lastConfirmedBar) : null;
+    phantomHigh       = seedOpen;
+    phantomLow        = seedOpen;
+    updatePhantomBar(lastTickPrice);
+
+    // Restore the last viewport if we have one and it's still valid for this
+    // data; otherwise fall back to fitting all content (e.g. first-ever load).
+    // Note: restoring on priceChart alone is enough — the logical-range sync
+    // subscription above propagates it to volChart automatically.
+    if (scrollState) {
+      // Live refresh after a new bar (fallback path): keep the current
+      // window and nudge it left instead of restoring the saved viewport.
+      applyScrollShift(scrollState);
+    } else {
+      showLatestBars();
+    }
+
+    overlay.classList.add('hidden');
+
+  } catch (err) {
+    spinner.style.display    = 'none';
+    overlayMsg.style.display = 'none';
+    overlayErr.style.display = 'block';
+    overlayErr.textContent   = 'Error loading chart data: ' + err.message;
+    console.error(err);
+  }
+}
+
+loadChartData();
+
+// ── Live tick stream (SSE) ──────────────────────────────────────────────
+// Pushes /api/last-tick-stream into the liveTickLine + header badge created
+// above. Independent of loadChartData()'s periodic full-refresh polling —
+// this connection stays open and the browser's EventSource auto-reconnects
+// on drop, so there's no manual retry/backoff logic needed here.
+const liveDot  = document.getElementById('live-dot');
+const liveText = document.getElementById('d-live');
+
+function setLiveStatus(state, label) {
+  // state: 'connecting' | 'live' | 'stale' | 'error'
+  const colors = { connecting: '#555', live: '#26a69a', stale: '#eab308', error: '#ef5350' };
+  liveDot.style.background = colors[state] || '#555';
+  liveText.textContent = label;
+}
+
+setLiveStatus('connecting', '-');
+
+const liveTickSource = new EventSource(
+  '/api/last-tick-stream?' + new URLSearchParams({ bars: BARS_PATH })
+);
+
+liveTickSource.onopen = () => {
+  setLiveStatus('connecting', '-');
+};
+
+liveTickSource.onmessage = (evt) => {
+  let record;
+  try {
+    record = JSON.parse(evt.data);
+  } catch (err) {
+    console.error('last-tick-stream: bad payload', err, evt.data);
+    return;
+  }
+  if (record && record.price != null) {
+    liveTickLine.applyOptions({ price: record.price });
+    liveTickLineShown = true;
+    setLiveStatus('live', fmt(record.price));
+    lastTickPrice = record.price;
+    updatePhantomBar(record.price);
+  }
+};
+
+liveTickSource.addEventListener('no_data', () => {
+  setLiveStatus('stale', 'no data');
+});
+
+// Appends one closed bar to every series with series.update() instead of
+// re-fetching /api/chart-data and calling setData() on everything. update()
+// either appends (time > last point's time) or replaces the last point
+// (time === last point's time) — it can't touch anything earlier than that,
+// which is exactly the "don't refresh the view" behavior we want: the pan/
+// zoom position is never disturbed because the series is never wiped.
+function applyNewBar(d) {
+  const { bar, volume, ema8, upper_band, lower_band, marker } = d;
+  const scrollState = captureScrollState();
+
+  barSeries.update(bar);
+  if (volume) volSeries.update(volume);
+  if (ema8 !== undefined)       emaSeries.update({ time: bar.time, value: ema8 });
+  if (upper_band !== undefined) ubSeries.update({ time: bar.time, value: upper_band });
+  if (lower_band !== undefined) lbSeries.update({ time: bar.time, value: lower_band });
+
+  // Keep the crosshair lookup maps in sync so hovering this bar works
+  // without a reload.
+  if (ema8 !== undefined)       emaMap[bar.time] = ema8;
+  if (upper_band !== undefined) ubMap[bar.time]  = upper_band;
+  if (lower_band !== undefined) lbMap[bar.time]  = lower_band;
+  if (volume)                   volMap[bar.time] = volume.value;
+
+  // setMarkers/setZones have no incremental variant — but appending to the
+  // arrays we already hold client-side and re-calling them is just local
+  // array work, no network round trip, so it's still "free" here.
+  if (marker) {
+    const xcDir = xcMarkerDirection(marker);
+    if (xcDir) {
+      xcMap[marker.time] = xcDir;  // XC circles are hidden; they only colour zones
+    } else {
+      allMarkers.push(marker);
+      barSeries.setMarkers(allMarkers);
+    }
+  }
+  const newZones = zoneEntriesForBar(bar, ema8, upper_band, lower_band);
+  if (newZones.length) {
+    zones.push(...newZones);
+    zonePrimitive.setZones(zones);
+  }
+
+  // Re-seed the phantom bar slot for whatever forms next, same as the full
+  // reload path does after setData(). Clear the old phantom point first —
+  // phantomSeries.update() below would otherwise just append a new point
+  // at the new synthetic time next to the stale one, since they're
+  // different time keys on the same series.
+  clearPhantomBar();
+  lastConfirmedBar = bar;
+  phantomBarTime    = bar.time + 1;
+  const seedOpen    = computePhantomOpen(lastConfirmedBar);
+  phantomHigh       = seedOpen;
+  phantomLow        = seedOpen;
+  updatePhantomBar(lastTickPrice);
+
+  applyScrollShift(scrollState);
+}
+
+liveTickSource.addEventListener('new_bar', (evt) => {
+  // Preferred path: the backend includes the closed bar's data in the SSE
+  // payload, so we can append it in place with applyNewBar() below — no
+  // /api/chart-data round trip, no setData() on any series, viewport
+  // untouched.
+  //
+  // Fallback: if this fires as a bare event (evt.data empty, or the backend
+  // hasn't been updated to include the payload yet — see chat for the
+  // required `new_bar` SSE payload shape), fall back to the old full
+  // re-fetch-and-setData() refresh so nothing breaks.
+  if (evt.data) {
+    try {
+      const d = JSON.parse(evt.data);
+      if (d && d.bar) {
+        applyNewBar(d);
+        playBarSound(d.marker);
+        return;
+      }
+    } catch (err) {
+      console.error('new_bar: bad payload, falling back to full reload', err, evt.data);
+    }
+  }
+  playBarSound(null); // fallback path has no marker info, plain tick only
+  loadChartData(captureScrollState());
+});
+
+liveTickSource.addEventListener('error', (evt) => {
+  // Fires both for our named "error" SSE events (backend read_last_tick
+  // threw) and for the browser's own connection-level errors — evt.data
+  // is only present in the former case.
+  if (evt.data) {
+    try {
+      const payload = JSON.parse(evt.data);
+      console.error('last-tick-stream: backend error', payload.error);
+    } catch { /* ignore parse failure on malformed error payload */ }
+  }
+  setLiveStatus('error', 'error');
+});
+
+</script>
+<style>
+  #trades-btn {
+    font-size:11px; color:#9598a1; background:transparent; border:1px solid #2a2e39;
+    border-radius:4px; padding:2px 8px; cursor:pointer; line-height:1.5;
+  }
+  #trades-btn:hover  { border-color:#3b82f6; color:#d1d4dc; }
+  #trades-btn.active { color:#60A5FA; border-color:#60A5FA; }
+  #trades-panel {
+    position:fixed; right:0; bottom:0; width:340px; max-width:100%; z-index:50;
+    background:#1e222d; border-left:1px solid #2a2e39; display:none; flex-direction:column;
+    font-size:12px;
+  }
+  #trades-panel.open { display:flex; }
+  #trades-summary {
+    padding:10px 12px; border-bottom:1px solid #2a2e39; display:grid;
+    grid-template-columns:repeat(3, 1fr); gap:6px 10px;
+  }
+  #trades-summary .k { color:#9598a1; font-size:10px; }
+  #trades-summary .v { font-size:13px; font-variant-numeric:tabular-nums; }
+  #trades-list { overflow-y:auto; flex:1 1 auto; overscroll-behavior:contain; }
+  .tr-row { padding:8px 12px; border-bottom:1px solid #2a2e39; cursor:pointer; }
+  .tr-row:hover    { background:#262b38; }
+  .tr-row.selected { background:#2a3245; box-shadow:inset 3px 0 0 #60A5FA; }
+  .tr-top { display:flex; align-items:baseline; gap:8px; }
+  .tr-num  { color:#9598a1; min-width:22px; }
+  .tr-side { font-weight:600; }
+  .tr-time { color:#9598a1; }
+  .tr-pts  { margin-left:auto; font-weight:600; font-variant-numeric:tabular-nums; }
+  .tr-legs { color:#9598a1; font-size:11px; margin-top:3px; font-variant-numeric:tabular-nums; }
+  .tr-leg  { display:grid; grid-template-columns:30px 58px 1fr auto; gap:6px; }
+  .tr-ln   { color:#6b7080; }
+  .tr-why  { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tr-flag { font-size:10px; color:#eab308; border:1px solid #eab30866; border-radius:3px;
+             padding:0 4px; margin-right:4px; }
+  .pos { color:#26a69a; } .neg { color:#ef5350; }
+</style>
+<div id="trades-panel" aria-label="Trades">
+  <div id="trades-summary"></div>
+  <div id="trades-list"></div>
+</div>
+<script>
+(() => {
+  const TRADES = [{"id":"log trade 1","side":"short","entry_sec":1791814310.604,"entry_bar":1791814310,"exit_bar":1791818151,"entry_price":7851.75,"legs":[{"reason":"flatten:ema_cross_and_two_closes","price":7860.25,"pts":-8.5},{"reason":"flatten:ema_cross_and_two_closes","price":7860.25,"pts":-8.5}],"total_pts":-17.0,"pnl_usd":-850.0,"flags":[]},{"id":"log trade 2","side":"short","entry_sec":1791831030.101,"entry_bar":1791831030,"exit_bar":1791834602,"entry_price":7848.25,"legs":[{"reason":"flatten:ema_cross_and_two_closes","price":7861.12,"pts":-12.88},{"reason":"flatten:ema_cross_and_two_closes","price":7861.12,"pts":-12.88}],"total_pts":-25.75,"pnl_usd":-1287.5,"flags":[]}];
+  const WIDE = 760;   // px; at or above this the chart narrows instead of being covered
+  const KEY = 'replay_trades_panel_open';
+  const panel = document.getElementById('trades-panel');
+  const list = document.getElementById('trades-list');
+  const container = document.getElementById('chart-container');
+
+  const btn = document.createElement('button');
+  btn.id = 'trades-btn'; btn.type = 'button'; btn.title = 'Show/hide the trade list';
+  btn.textContent = 'Trades';
+  document.getElementById('ohlc-display').appendChild(btn);
+
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const when = sec => {
+    const d = toDisplayDate(Math.floor(sec));
+    return `${pad2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${pad2(d.getUTCHours())}:` +
+           `${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+  };
+  const sign = (v, dp) => (v > 0 ? '+' : '') + v.toFixed(dp);
+  const cls = v => v > 0 ? 'pos' : v < 0 ? 'neg' : '';
+  const reason = r => r.replace(/^flatten:/, '');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // Summary
+  const n = TRADES.length;
+  const wins = TRADES.filter(t => t.total_pts > 0).length;
+  const losses = TRADES.filter(t => t.total_pts < 0).length;
+  const net = TRADES.reduce((a, t) => a + t.total_pts, 0);
+  const usd = TRADES.reduce((a, t) => a + t.pnl_usd, 0);
+  const gw = TRADES.filter(t => t.total_pts > 0).reduce((a, t) => a + t.total_pts, 0);
+  const gl = -TRADES.filter(t => t.total_pts < 0).reduce((a, t) => a + t.total_pts, 0);
+  const cell = (k, v, c = '') => `<div><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`;
+  document.getElementById('trades-summary').innerHTML =
+    cell('Trades', n) +
+    cell('Won / lost', `${wins} / ${losses}`) +
+    cell('Win rate', n ? (100 * wins / n).toFixed(1) + '%' : '-') +
+    cell('Net pts', sign(net, 2), cls(net)) +
+    cell('Net $', (usd < 0 ? '-$' : '$') + Math.abs(usd).toLocaleString(undefined, {maximumFractionDigits: 0}), cls(usd)) +
+    cell('Profit factor', gl ? (gw / gl).toFixed(2) : '-');
+
+  // Rows (re-rendered when the display time zone changes)
+  function renderRows() {
+  const selected = list.querySelector('.selected');
+  list.innerHTML = TRADES.map((t, i) => {
+    const long = t.side === 'long';
+    // Legs that exit together (same reason and price) share a line: "L1-2".
+    const groups = [];
+    t.legs.forEach((l, j) => {
+      const g = groups.find(g => g.reason === l.reason && g.price === l.price);
+      if (g) { g.nums.push(j + 1); g.pts += l.pts; }
+      else groups.push({ reason: l.reason, price: l.price, pts: l.pts, nums: [j + 1] });
+    });
+    const legs = groups.map(g =>
+      `<div class="tr-leg"><span class="tr-ln">L${g.nums.join('-')}</span>` +
+      `<span>${g.price.toFixed(2)}</span><span class="tr-why">${esc(reason(g.reason))}</span>` +
+      `<span class="${cls(g.pts)}">${sign(g.pts, 2)}</span></div>`
+    ).join('');
+    const flags = t.flags.map(f => `<span class="tr-flag">${esc(f)}</span>`).join('');
+    return `<div class="tr-row" data-i="${i}" title="${esc(t.id)}">
+      <div class="tr-top">
+        <span class="tr-num">${i + 1}</span>
+        <span class="tr-side" style="color:${long ? '#facc15' : '#f97316'}">${long ? '&#9650; Long' : '&#9660; Short'}</span>
+        <span class="tr-time">${when(t.entry_sec)}</span>
+        <span class="tr-pts ${cls(t.total_pts)}">${sign(t.total_pts, 2)}</span>
+      </div>
+      <div class="tr-legs">
+        <div class="tr-leg"><span class="tr-ln">In</span><span>${t.entry_price.toFixed(2)}</span><span class="tr-why">${flags}</span><span></span></div>
+        ${legs}
+      </div>
+    </div>`;
+  }).join('');
+  if (selected) list.querySelector(`[data-i="${selected.dataset.i}"]`).classList.add('selected');
+  }
+  renderRows();
+  window.addEventListener('displaytzchange', renderRows);
+
+  // Click: scroll the chart to show the trade from entry to exit.
+  let barIndex = null;
+  function indexOf(time) {
+    if (!barIndex) {
+      barIndex = new Map();
+      barSeries.data().forEach((b, i) => barIndex.set(b.time, i));
+    }
+    return barIndex.get(time);
+  }
+  list.addEventListener('click', e => {
+    const row = e.target.closest('.tr-row');
+    if (!row) return;
+    list.querySelectorAll('.selected').forEach(r => r.classList.remove('selected'));
+    row.classList.add('selected');
+    const t = TRADES[+row.dataset.i];
+    const a = indexOf(t.entry_bar), b = indexOf(t.exit_bar != null ? t.exit_bar : t.entry_bar);
+    if (a == null || b == null) return;
+    const ts = priceChart.timeScale();
+    const cur = ts.getVisibleLogicalRange();
+    const width = Math.max(cur ? cur.to - cur.from : 80, (b - a) + 20);
+    const mid = (a + b) / 2;
+    ts.setVisibleLogicalRange({ from: mid - width / 2, to: mid + width / 2 });
+    if (window.innerWidth < WIDE) setOpen(false, false);   // panel covers the chart here
+  });
+
+  // Toggle / layout
+  function layout() {
+    const open = panel.classList.contains('open');
+    panel.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';
+    const narrowChart = open && window.innerWidth >= WIDE;
+    container.style.width = narrowChart ? `calc(100% - ${panel.offsetWidth}px)` : '';
+    resize();
+  }
+  function setOpen(open, remember = true) {
+    panel.classList.toggle('open', open);
+    btn.classList.toggle('active', open);
+    if (remember) {
+      try { localStorage.setItem(KEY, open ? '1' : '0'); } catch (e) { /* ignore */ }
+    }
+    layout();
+  }
+  btn.addEventListener('click', () => setOpen(!panel.classList.contains('open')));
+  window.addEventListener('resize', layout);
+  // Wide screens: open unless the viewer closed it last time. Narrow: closed.
+  let startOpen = window.innerWidth >= WIDE;
+  if (startOpen) {
+    try { startOpen = localStorage.getItem(KEY) !== '0'; } catch (e) { /* ignore */ }
+  }
+  setOpen(startOpen, false);
+})();
+</script>
+<style>
+  #events-head { padding:6px 12px; border-top:1px solid #2a2e39; border-bottom:1px solid #2a2e39;
+                 color:#9598a1; font-size:11px; }
+  #events-list { overflow-y:auto; max-height:35%; flex:0 0 auto; overscroll-behavior:contain; }
+  .ev-row { padding:5px 12px; border-bottom:1px solid #2a2e39; cursor:pointer; font-size:11px;
+            display:grid; grid-template-columns:62px 1fr; gap:8px; }
+  .ev-row:hover { background:#262b38; }
+  .ev-row.off   { cursor:default; opacity:0.55; }
+  .ev-time { color:#9598a1; font-variant-numeric:tabular-nums; }
+  .ev-text { overflow-wrap:anywhere; }
+</style>
+<script>
+(() => {
+  const EVENTS = [{"sec":1791804649.747,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 12470 and clientId 8"},{"sec":1791804649.748,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 13052 and clientId 8"},{"sec":1791804649.748,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 13056 and clientId 8"},{"sec":1791804649.748,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 13057 and clientId 8"},{"sec":1791804649.749,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 13054 and clientId 8"},{"sec":1791804649.749,"bar":1791805042,"kind":"error","color":"#f43f5e","text":"orderStatus: No order found for orderId 13055 and clientId 8"},{"sec":1791804650.2,"bar":1791805042,"kind":"connection","color":"#a78bfa","text":"started: bot1 running (paper). Press Ctrl+C to stop."},{"sec":1791811800.09,"bar":1791811800,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13306 stop 7857.50 cancelled unfilled"},{"sec":1791818684.847,"bar":1791819446,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13543 stop 7853.00 cancelled unfilled"},{"sec":1791818717.584,"bar":1791819446,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13545 stop 7853.00 cancelled unfilled"},{"sec":1791818867.874,"bar":1791819446,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13551 stop 7853.00 cancelled unfilled"},{"sec":1791818880.636,"bar":1791819446,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13553 stop 7853.00 cancelled unfilled"},{"sec":1791829295.675,"bar":1791829295,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13901 stop 7847.00 cancelled unfilled"},{"sec":1791830627.51,"bar":1791831030,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13946 stop 7847.00 cancelled unfilled"},{"sec":1791830812.726,"bar":1791831030,"kind":"cancelled","color":"#9598a1","text":"Entry short id=13953 stop 7848.25 cancelled unfilled"},{"sec":1791835500.766,"bar":null,"kind":"connection","color":"#a78bfa","text":"disconnected: bot1: IB disconnected \u2014 session ending"}];
+  const panel = document.getElementById('trades-panel');
+  const head = document.createElement('div');
+  head.id = 'events-head';
+  head.textContent = `Events (${EVENTS.length})`;
+  const list = document.createElement('div');
+  list.id = 'events-list';
+  panel.append(head, list);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const when = sec => {
+    const d = toDisplayDate(Math.floor(sec));
+    return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+  };
+  function render() {
+    list.innerHTML = EVENTS.map((e, i) =>
+      `<div class="ev-row${e.bar == null ? ' off' : ''}" data-i="${i}"
+            title="${e.bar == null ? 'outside the charted bars' : ''}">
+         <span class="ev-time">${when(e.sec)}</span>
+         <span class="ev-text" style="color:${e.color}">${esc(e.text)}</span></div>`).join('');
+  }
+  render();
+  window.addEventListener('displaytzchange', render);
+  list.addEventListener('click', ev => {
+    const row = ev.target.closest('.ev-row');
+    const e = row && EVENTS[+row.dataset.i];
+    if (!e || e.bar == null) return;
+    const i = barSeries.data().findIndex(b => b.time === e.bar);
+    if (i < 0) return;
+    const ts = priceChart.timeScale();
+    const cur = ts.getVisibleLogicalRange();
+    const width = cur ? cur.to - cur.from : 80;
+    ts.setVisibleLogicalRange({ from: i - width / 2, to: i + width / 2 });
+  });
+})();
+</script>
+<style>
+  #brian-btn { font-size:11px; color:#9598a1; background:transparent; border:1px solid #2a2e39;
+               border-radius:4px; padding:2px 8px; cursor:pointer; line-height:1.5; }
+  #brian-btn:hover  { border-color:#3b82f6; color:#d1d4dc; }
+  #brian-btn.active { color:#60A5FA; border-color:#60A5FA; }
+  #brian-pane { display:none; flex:0 0 auto; max-height:50%; overflow:auto;
+                border-bottom:1px solid #2a2e39; background:#131722; overscroll-behavior:contain; }
+  #brian-pane.open { display:block; }
+  #brian-pane img  { display:block; max-width:100%; height:auto; margin:0 auto; }
+</style>
+<script>
+(() => {
+  const SRC = "2026-10-12-brian.png";
+  const container = document.getElementById('chart-container');
+  const pane = document.createElement('div');
+  pane.id = 'brian-pane';
+  pane.innerHTML = `<a href="${SRC}" target="_blank" rel="noopener"><img alt="Benchmark chart"></a>`;
+  pane.querySelector('img').src = SRC;
+  container.before(pane);
+  const btn = document.createElement('button');
+  btn.id = 'brian-btn';
+  btn.type = 'button';
+  btn.title = 'Show/hide ' + SRC;
+  btn.textContent = 'Benchmark';
+  document.getElementById('ohlc-display').append(btn);
+  // Match the chart's width (the trades sidebar narrows it) and re-fit the chart.
+  const fit = () => { pane.style.width = container.style.width; };
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active', pane.classList.toggle('open'));
+    window.dispatchEvent(new Event('resize'));
+  });
+  pane.querySelector('img').addEventListener('load', () => window.dispatchEvent(new Event('resize')));
+  window.addEventListener('resize', fit);
+  fit();
+})();
+</script>
+</body>
+</html>
