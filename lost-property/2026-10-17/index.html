@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lost Property – 17 October 2026</title>
+<meta name="description" content="Lost property items found on Saturday 17 October 2026.">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --text: #1f1d1a;
+    --muted: #6b665e;
+    --accent: #b5531c;
+    --link: #9a4312;
+    --link-hover: #7a330b;
+    --border: #e4dfd5;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171614;
+      --card: #22201d;
+      --text: #f1eee8;
+      --muted: #a8a196;
+      --accent: #e98a4f;
+      --link: #f0a06e;
+      --link-hover: #ffc49d;
+      --border: #36322c;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 48px; }
+  header { margin-bottom: 28px; }
+  .eyebrow {
+    margin: 0 0 4px;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.15; }
+  .intro { margin: 0; color: var(--muted); max-width: 60ch; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+  }
+  .card button {
+    all: unset;
+    cursor: zoom-in;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--border);
+  }
+  .card button:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s ease;
+  }
+  .card button:hover img { transform: scale(1.03); }
+  .card figcaption { padding: 14px 16px 16px; }
+  .card h2 { margin: 0 0 4px; font-size: 1.05rem; }
+  .card p { margin: 0; font-size: .92rem; color: var(--muted); }
+
+  footer { margin-top: 32px; font-size: .9rem; color: var(--muted); }
+  a {
+    color: var(--link);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+  a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
+  a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 2px; }
+
+  /* Lightbox */
+  dialog {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+  dialog::backdrop { background: rgba(0,0,0,.85); }
+  dialog img {
+    display: block;
+    max-width: 94vw;
+    max-height: 86vh;
+    border-radius: 8px;
+  }
+  dialog p { color: #fff; text-align: center; margin: 10px 0 0; font-size: .95rem; }
+  .close {
+    position: fixed;
+    top: 12px; right: 12px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .close:hover { background: rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Lost property</p>
+    <h1>Items found Saturday 17 October 2026</h1>
+    <p class="intro">Recognise something? Tap a photo to see it larger, then get in touch to collect it.</p>
+  </header>
+
+  <ul class="grid">
+    <li>
+      <figure class="card" style="margin:0">
+        <button type="button" data-full="img/coat-blancket-jacket.jpg" aria-label="Enlarge photo: coat, blanket and jacket">
+          <img src="img/coat-blancket-jacket.jpg" alt="A tan wool coat with belt, a brown patterned fringed blanket, and a navy blazer with a pocket square" loading="lazy" width="553" height="348">
+        </button>
+        <figcaption>
+          <h2>Coat, blanket &amp; jacket</h2>
+          <p>Tan belted wool coat, brown patterned fringed blanket/shawl, navy blazer with pocket square.</p>
+        </figcaption>
+      </figure>
+    </li>
+    <li>
+      <figure class="card" style="margin:0">
+        <button type="button" data-full="img/toys-and-snacks.jpg" aria-label="Enlarge photo: bag of toys and snacks">
+          <img src="img/toys-and-snacks.jpg" alt="A black tropical-print bag with flamingos and palm leaves, holding toys and snacks" loading="lazy" width="398" height="377">
+        </button>
+        <figcaption>
+          <h2>Toys &amp; snacks</h2>
+          <p>Black tropical/flamingo-print tote bag containing toys and snacks.</p>
+        </figcaption>
+      </figure>
+    </li>
+    <li>
+      <figure class="card" style="margin:0">
+        <button type="button" data-full="img/water_bottles_etc.jpg" aria-label="Enlarge photo: water bottles and other items">
+          <img src="img/water_bottles_etc.jpg" alt="Several water bottles and flasks, a travel cup, a glass food container, a pen and a lace bow" loading="lazy" width="426" height="346">
+        </button>
+        <figcaption>
+          <h2>Water bottles &amp; more</h2>
+          <p>Purple and navy drink bottles, stainless flasks, a pink travel cup, glass lunch container, pen and a lace hair bow.</p>
+        </figcaption>
+      </figure>
+    </li>
+  </ul>
+
+  <footer>Items are held at North Sydney NSW 2060. Contact Sky on <a href="tel:0412426380">0412 426 380</a> to arrange collection.</footer>
+</div>
+
+<dialog id="lightbox" aria-label="Enlarged photo">
+  <button class="close" type="button" aria-label="Close">&times;</button>
+  <img src="" alt="">
+  <p></p>
+</dialog>
+
+<script>
+  const box = document.getElementById('lightbox');
+  const boxImg = box.querySelector('img');
+  const boxCap = box.querySelector('p');
+  document.querySelectorAll('[data-full]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const thumb = btn.querySelector('img');
+      boxImg.src = btn.dataset.full;
+      boxImg.alt = thumb.alt;
+      boxCap.textContent = btn.closest('.card').querySelector('h2').textContent;
+      box.showModal();
+    });
+  });
+  box.querySelector('.close').addEventListener('click', () => box.close());
+  box.addEventListener('click', e => { if (e.target === box) box.close(); });
+</script>
+</body>
+</html>
